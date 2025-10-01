@@ -1,0 +1,1804 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model reports</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; background-color: #f8f9fa; display: flex; height: 100vh;
+        }
+        #sidebar {
+            width: 300px; background-color: #ffffff; color: #495057; padding: 20px;
+            box-sizing: border-box; height: 100%; overflow-y: auto; flex-shrink: 0;
+        }
+        #sidebar h1 {
+            font-size: 1.5em; margin-top: 0; color: #343a40;
+            border-bottom: 1px solid #495057; padding-bottom: 10px;
+        }
+        #species-list { list-style-type: none; padding: 0; margin: 0; }
+        #species-list li a {
+            display: block; padding: 10px 15px; text-decoration: none;
+            color: #495057; border-radius: 5px; transition: background-color 0.2s, color 0.2s;
+        }
+        #species-list li a:hover { background-color: #495057; color: #ffffff; }
+        #species-list li a.active { background-color: #007bff; color: white; font-weight: bold; }
+        #main-content {
+            flex-grow: 1; padding: 25px; overflow-y: auto;
+            height: 100vh; box-sizing: border-box;
+        }
+        .species-content { 
+            display: none; border: 1px solid #dee2e6; padding: 20px; 
+            background-color: #fff; border-radius: 8px; 
+        }
+        .tabs { overflow: hidden; border-bottom: 1px solid #ccc; margin-bottom: 15px; }
+        .tabs button {
+            background-color: inherit; float: left; border: none; outline: none;
+            cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 17px;
+        }
+        .tabs button:hover { background-color: #f1f1f1; }
+        .tabs button.active { background-color: #ccc; font-weight: bold; }
+        .tabcontent { display: none; }
+        .image-container { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 15px; text-align: center; margin: 20px 0; }
+        .image-container div { flex: 1; min-width: 300px; padding: 10px; border: 1px solid #eee; border-radius: 5px;}
+        .image-container img { max-width: 100%; height: auto; }
+        /* NYTT: Gör bilden klickbar */
+        .image-container img.clickable { cursor: pointer; transition: transform 0.2s; }
+        .image-container img.clickable:hover { transform: scale(1.03); }
+        iframe { width: 100%; height: 1200px; border: 1px solid #ccc; }
+
+        /* ---- NY CSS FÖR BILDMODAL ---- */
+        .modal {
+            display: none; /* Dold som standard */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .close-button:hover, .close-button:focus {
+            color: #bbb;
+            text-decoration: none;
+        }
+        .placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #6c757d;
+            font-size: 1.5em;
+            text-align: center;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="sidebar">
+        <h1>Species</h1>
+        <ul id="species-list">
+            <li><a href="#" id="link-Abramis_brama" onclick="showSpecies('Abramis_brama'); return false;">Abramis brama</a></li>
+            <li><a href="#" id="link-Agonus_cataphractus" onclick="showSpecies('Agonus_cataphractus'); return false;">Agonus cataphractus</a></li>
+            <li><a href="#" id="link-Alburnus_alburnus" onclick="showSpecies('Alburnus_alburnus'); return false;">Alburnus alburnus</a></li>
+            <li><a href="#" id="link-Alloteuthis_subulata" onclick="showSpecies('Alloteuthis_subulata'); return false;">Alloteuthis subulata</a></li>
+            <li><a href="#" id="link-Alosa_fallax" onclick="showSpecies('Alosa_fallax'); return false;">Alosa fallax</a></li>
+            <li><a href="#" id="link-Amblyraja_radiata" onclick="showSpecies('Amblyraja_radiata'); return false;">Amblyraja radiata</a></li>
+            <li><a href="#" id="link-Ammodytes_marinus" onclick="showSpecies('Ammodytes_marinus'); return false;">Ammodytes marinus</a></li>
+            <li><a href="#" id="link-Ammodytes_tobianus" onclick="showSpecies('Ammodytes_tobianus'); return false;">Ammodytes tobianus</a></li>
+            <li><a href="#" id="link-Anarhichas_lupus" onclick="showSpecies('Anarhichas_lupus'); return false;">Anarhichas lupus</a></li>
+            <li><a href="#" id="link-Anguilla_anguilla" onclick="showSpecies('Anguilla_anguilla'); return false;">Anguilla anguilla</a></li>
+            <li><a href="#" id="link-Aphia_minuta" onclick="showSpecies('Aphia_minuta'); return false;">Aphia minuta</a></li>
+            <li><a href="#" id="link-Argentina_silus" onclick="showSpecies('Argentina_silus'); return false;">Argentina silus</a></li>
+            <li><a href="#" id="link-Argentina_sphyraena" onclick="showSpecies('Argentina_sphyraena'); return false;">Argentina sphyraena</a></li>
+            <li><a href="#" id="link-Arnoglossus_laterna" onclick="showSpecies('Arnoglossus_laterna'); return false;">Arnoglossus laterna</a></li>
+            <li><a href="#" id="link-Belone_belone" onclick="showSpecies('Belone_belone'); return false;">Belone belone</a></li>
+            <li><a href="#" id="link-Blicca_bjoerkna" onclick="showSpecies('Blicca_bjoerkna'); return false;">Blicca bjoerkna</a></li>
+            <li><a href="#" id="link-Buglossidium_luteum" onclick="showSpecies('Buglossidium_luteum'); return false;">Buglossidium luteum</a></li>
+            <li><a href="#" id="link-Callionymus_lyra" onclick="showSpecies('Callionymus_lyra'); return false;">Callionymus lyra</a></li>
+            <li><a href="#" id="link-Callionymus_maculatus" onclick="showSpecies('Callionymus_maculatus'); return false;">Callionymus maculatus</a></li>
+            <li><a href="#" id="link-Cancer_pagurus" onclick="showSpecies('Cancer_pagurus'); return false;">Cancer pagurus</a></li>
+            <li><a href="#" id="link-Carassius_carassius" onclick="showSpecies('Carassius_carassius'); return false;">Carassius carassius</a></li>
+            <li><a href="#" id="link-Carcinus_maenas" onclick="showSpecies('Carcinus_maenas'); return false;">Carcinus maenas</a></li>
+            <li><a href="#" id="link-Centrolabrus_exoletus" onclick="showSpecies('Centrolabrus_exoletus'); return false;">Centrolabrus exoletus</a></li>
+            <li><a href="#" id="link-Chelidonichthys_cuculus" onclick="showSpecies('Chelidonichthys_cuculus'); return false;">Chelidonichthys cuculus</a></li>
+            <li><a href="#" id="link-Chelidonichthys_lucerna" onclick="showSpecies('Chelidonichthys_lucerna'); return false;">Chelidonichthys lucerna</a></li>
+            <li><a href="#" id="link-Ciliata_mustela" onclick="showSpecies('Ciliata_mustela'); return false;">Ciliata mustela</a></li>
+            <li><a href="#" id="link-Clupea_harengus" onclick="showSpecies('Clupea_harengus'); return false;">Clupea harengus</a></li>
+            <li><a href="#" id="link-Coregonus_albula" onclick="showSpecies('Coregonus_albula'); return false;">Coregonus albula</a></li>
+            <li><a href="#" id="link-Coregonus_maraena" onclick="showSpecies('Coregonus_maraena'); return false;">Coregonus maraena</a></li>
+            <li><a href="#" id="link-Cottus_gobio" onclick="showSpecies('Cottus_gobio'); return false;">Cottus gobio</a></li>
+            <li><a href="#" id="link-Cottus_poecilopus" onclick="showSpecies('Cottus_poecilopus'); return false;">Cottus poecilopus</a></li>
+            <li><a href="#" id="link-Crangon_crangon" onclick="showSpecies('Crangon_crangon'); return false;">Crangon crangon</a></li>
+            <li><a href="#" id="link-Ctenolabrus_rupestris" onclick="showSpecies('Ctenolabrus_rupestris'); return false;">Ctenolabrus rupestris</a></li>
+            <li><a href="#" id="link-Cyclopterus_lumpus" onclick="showSpecies('Cyclopterus_lumpus'); return false;">Cyclopterus lumpus</a></li>
+            <li><a href="#" id="link-Echiichthys_vipera" onclick="showSpecies('Echiichthys_vipera'); return false;">Echiichthys vipera</a></li>
+            <li><a href="#" id="link-Enchelyopus_cimbrius" onclick="showSpecies('Enchelyopus_cimbrius'); return false;">Enchelyopus cimbrius</a></li>
+            <li><a href="#" id="link-Engraulis_encrasicolus" onclick="showSpecies('Engraulis_encrasicolus'); return false;">Engraulis encrasicolus</a></li>
+            <li><a href="#" id="link-Entelurus_aequoreus" onclick="showSpecies('Entelurus_aequoreus'); return false;">Entelurus aequoreus</a></li>
+            <li><a href="#" id="link-Esox_lucius" onclick="showSpecies('Esox_lucius'); return false;">Esox lucius</a></li>
+            <li><a href="#" id="link-Eutrigla_gurnardus" onclick="showSpecies('Eutrigla_gurnardus'); return false;">Eutrigla gurnardus</a></li>
+            <li><a href="#" id="link-Gadiculus_argenteus" onclick="showSpecies('Gadiculus_argenteus'); return false;">Gadiculus argenteus</a></li>
+            <li><a href="#" id="link-Gadus_morhua" onclick="showSpecies('Gadus_morhua'); return false;">Gadus morhua</a></li>
+            <li><a href="#" id="link-Gasterosteus_aculeatus" onclick="showSpecies('Gasterosteus_aculeatus'); return false;">Gasterosteus aculeatus</a></li>
+            <li><a href="#" id="link-Glyptocephalus_cynoglossus" onclick="showSpecies('Glyptocephalus_cynoglossus'); return false;">Glyptocephalus cynoglossus</a></li>
+            <li><a href="#" id="link-Gobius_niger" onclick="showSpecies('Gobius_niger'); return false;">Gobius niger</a></li>
+            <li><a href="#" id="link-Gymnocephalus_cernua" onclick="showSpecies('Gymnocephalus_cernua'); return false;">Gymnocephalus cernua</a></li>
+            <li><a href="#" id="link-Hippoglossoides_platessoides" onclick="showSpecies('Hippoglossoides_platessoides'); return false;">Hippoglossoides platessoides</a></li>
+            <li><a href="#" id="link-Hippoglossus_hippoglossus" onclick="showSpecies('Hippoglossus_hippoglossus'); return false;">Hippoglossus hippoglossus</a></li>
+            <li><a href="#" id="link-Homarus_gammarus" onclick="showSpecies('Homarus_gammarus'); return false;">Homarus gammarus</a></li>
+            <li><a href="#" id="link-Hyas_araneus" onclick="showSpecies('Hyas_araneus'); return false;">Hyas araneus</a></li>
+            <li><a href="#" id="link-Hyperoplus_immaculatus" onclick="showSpecies('Hyperoplus_immaculatus'); return false;">Hyperoplus immaculatus</a></li>
+            <li><a href="#" id="link-Hyperoplus_lanceolatus" onclick="showSpecies('Hyperoplus_lanceolatus'); return false;">Hyperoplus lanceolatus</a></li>
+            <li><a href="#" id="link-Illex_coindetii" onclick="showSpecies('Illex_coindetii'); return false;">Illex coindetii</a></li>
+            <li><a href="#" id="link-Labrus_bergylta" onclick="showSpecies('Labrus_bergylta'); return false;">Labrus bergylta</a></li>
+            <li><a href="#" id="link-Lepidorhombus_whiffiagonis" onclick="showSpecies('Lepidorhombus_whiffiagonis'); return false;">Lepidorhombus whiffiagonis</a></li>
+            <li><a href="#" id="link-Leuciscus_idus" onclick="showSpecies('Leuciscus_idus'); return false;">Leuciscus idus</a></li>
+            <li><a href="#" id="link-Leuciscus_leuciscus" onclick="showSpecies('Leuciscus_leuciscus'); return false;">Leuciscus leuciscus</a></li>
+            <li><a href="#" id="link-Limanda_limanda" onclick="showSpecies('Limanda_limanda'); return false;">Limanda limanda</a></li>
+            <li><a href="#" id="link-Lithodes_maja" onclick="showSpecies('Lithodes_maja'); return false;">Lithodes maja</a></li>
+            <li><a href="#" id="link-Loligo_forbesii" onclick="showSpecies('Loligo_forbesii'); return false;">Loligo forbesii</a></li>
+            <li><a href="#" id="link-Loligo_vulgaris" onclick="showSpecies('Loligo_vulgaris'); return false;">Loligo vulgaris</a></li>
+            <li><a href="#" id="link-Lophius_piscatorius" onclick="showSpecies('Lophius_piscatorius'); return false;">Lophius piscatorius</a></li>
+            <li><a href="#" id="link-Lota_lota" onclick="showSpecies('Lota_lota'); return false;">Lota lota</a></li>
+            <li><a href="#" id="link-Lumpenus_lampretaeformis" onclick="showSpecies('Lumpenus_lampretaeformis'); return false;">Lumpenus lampretaeformis</a></li>
+            <li><a href="#" id="link-Lycodes_vahlii" onclick="showSpecies('Lycodes_vahlii'); return false;">Lycodes vahlii</a></li>
+            <li><a href="#" id="link-Macropodia_rostrata" onclick="showSpecies('Macropodia_rostrata'); return false;">Macropodia rostrata</a></li>
+            <li><a href="#" id="link-Maurolicus_muelleri" onclick="showSpecies('Maurolicus_muelleri'); return false;">Maurolicus muelleri</a></li>
+            <li><a href="#" id="link-Melanogrammus_aeglefinus" onclick="showSpecies('Melanogrammus_aeglefinus'); return false;">Melanogrammus aeglefinus</a></li>
+            <li><a href="#" id="link-Merlangius_merlangus" onclick="showSpecies('Merlangius_merlangus'); return false;">Merlangius merlangus</a></li>
+            <li><a href="#" id="link-Merluccius_merluccius" onclick="showSpecies('Merluccius_merluccius'); return false;">Merluccius merluccius</a></li>
+            <li><a href="#" id="link-Micromesistius_poutassou" onclick="showSpecies('Micromesistius_poutassou'); return false;">Micromesistius poutassou</a></li>
+            <li><a href="#" id="link-Microstomus_kitt" onclick="showSpecies('Microstomus_kitt'); return false;">Microstomus kitt</a></li>
+            <li><a href="#" id="link-Molva_molva" onclick="showSpecies('Molva_molva'); return false;">Molva molva</a></li>
+            <li><a href="#" id="link-Mullus_surmuletus" onclick="showSpecies('Mullus_surmuletus'); return false;">Mullus surmuletus</a></li>
+            <li><a href="#" id="link-Mustelus_asterias" onclick="showSpecies('Mustelus_asterias'); return false;">Mustelus asterias</a></li>
+            <li><a href="#" id="link-Myoxocephalus_quadricorni" onclick="showSpecies('Myoxocephalus_quadricorni'); return false;">Myoxocephalus quadricorni</a></li>
+            <li><a href="#" id="link-Myoxocephalus_scorpius" onclick="showSpecies('Myoxocephalus_scorpius'); return false;">Myoxocephalus scorpius</a></li>
+            <li><a href="#" id="link-Myxine_glutinosa" onclick="showSpecies('Myxine_glutinosa'); return false;">Myxine glutinosa</a></li>
+            <li><a href="#" id="link-Neogobius_melanostomus" onclick="showSpecies('Neogobius_melanostomus'); return false;">Neogobius melanostomus</a></li>
+            <li><a href="#" id="link-Nephrops_norvegicus" onclick="showSpecies('Nephrops_norvegicus'); return false;">Nephrops norvegicus</a></li>
+            <li><a href="#" id="link-Nerophis_ophidion" onclick="showSpecies('Nerophis_ophidion'); return false;">Nerophis ophidion</a></li>
+            <li><a href="#" id="link-Osmerus_eperlanus" onclick="showSpecies('Osmerus_eperlanus'); return false;">Osmerus eperlanus</a></li>
+            <li><a href="#" id="link-Pagurus_bernhardus" onclick="showSpecies('Pagurus_bernhardus'); return false;">Pagurus bernhardus</a></li>
+            <li><a href="#" id="link-Perca_fluviatilis" onclick="showSpecies('Perca_fluviatilis'); return false;">Perca fluviatilis</a></li>
+            <li><a href="#" id="link-Pholis_gunnellus" onclick="showSpecies('Pholis_gunnellus'); return false;">Pholis gunnellus</a></li>
+            <li><a href="#" id="link-Phoxinus_phoxinus" onclick="showSpecies('Phoxinus_phoxinus'); return false;">Phoxinus phoxinus</a></li>
+            <li><a href="#" id="link-Platichthys_flesus" onclick="showSpecies('Platichthys_flesus'); return false;">Platichthys flesus</a></li>
+            <li><a href="#" id="link-Pleuronectes_platessa" onclick="showSpecies('Pleuronectes_platessa'); return false;">Pleuronectes platessa</a></li>
+            <li><a href="#" id="link-Pollachius_pollachius" onclick="showSpecies('Pollachius_pollachius'); return false;">Pollachius pollachius</a></li>
+            <li><a href="#" id="link-Pollachius_virens" onclick="showSpecies('Pollachius_virens'); return false;">Pollachius virens</a></li>
+            <li><a href="#" id="link-Pomatoschistus_flavescens" onclick="showSpecies('Pomatoschistus_flavescens'); return false;">Pomatoschistus flavescens</a></li>
+            <li><a href="#" id="link-Pomatoschistus_minutus" onclick="showSpecies('Pomatoschistus_minutus'); return false;">Pomatoschistus minutus</a></li>
+            <li><a href="#" id="link-Pungitius_pungitius" onclick="showSpecies('Pungitius_pungitius'); return false;">Pungitius pungitius</a></li>
+            <li><a href="#" id="link-Raja_clavata" onclick="showSpecies('Raja_clavata'); return false;">Raja clavata</a></li>
+            <li><a href="#" id="link-Raja_montagui" onclick="showSpecies('Raja_montagui'); return false;">Raja montagui</a></li>
+            <li><a href="#" id="link-Rutilus_rutilus" onclick="showSpecies('Rutilus_rutilus'); return false;">Rutilus rutilus</a></li>
+            <li><a href="#" id="link-Salmo_trutta" onclick="showSpecies('Salmo_trutta'); return false;">Salmo trutta</a></li>
+            <li><a href="#" id="link-Sander_lucioperca" onclick="showSpecies('Sander_lucioperca'); return false;">Sander lucioperca</a></li>
+            <li><a href="#" id="link-Sardina_pilchardus" onclick="showSpecies('Sardina_pilchardus'); return false;">Sardina pilchardus</a></li>
+            <li><a href="#" id="link-Scardinius_erythrophthalm" onclick="showSpecies('Scardinius_erythrophthalm'); return false;">Scardinius erythrophthalm</a></li>
+            <li><a href="#" id="link-Scomber_scombrus" onclick="showSpecies('Scomber_scombrus'); return false;">Scomber scombrus</a></li>
+            <li><a href="#" id="link-Scophthalmus_maximus" onclick="showSpecies('Scophthalmus_maximus'); return false;">Scophthalmus maximus</a></li>
+            <li><a href="#" id="link-Scophthalmus_rhombus" onclick="showSpecies('Scophthalmus_rhombus'); return false;">Scophthalmus rhombus</a></li>
+            <li><a href="#" id="link-Scyliorhinus_canicula" onclick="showSpecies('Scyliorhinus_canicula'); return false;">Scyliorhinus canicula</a></li>
+            <li><a href="#" id="link-Solea_solea" onclick="showSpecies('Solea_solea'); return false;">Solea solea</a></li>
+            <li><a href="#" id="link-Spinachia_spinachia" onclick="showSpecies('Spinachia_spinachia'); return false;">Spinachia spinachia</a></li>
+            <li><a href="#" id="link-Sprattus_sprattus" onclick="showSpecies('Sprattus_sprattus'); return false;">Sprattus sprattus</a></li>
+            <li><a href="#" id="link-Squalus_acanthias" onclick="showSpecies('Squalus_acanthias'); return false;">Squalus acanthias</a></li>
+            <li><a href="#" id="link-Symphodus_melops" onclick="showSpecies('Symphodus_melops'); return false;">Symphodus melops</a></li>
+            <li><a href="#" id="link-Syngnathus_acus" onclick="showSpecies('Syngnathus_acus'); return false;">Syngnathus acus</a></li>
+            <li><a href="#" id="link-Syngnathus_rostellatus" onclick="showSpecies('Syngnathus_rostellatus'); return false;">Syngnathus rostellatus</a></li>
+            <li><a href="#" id="link-Syngnathus_typhle" onclick="showSpecies('Syngnathus_typhle'); return false;">Syngnathus typhle</a></li>
+            <li><a href="#" id="link-Taurulus_bubalis" onclick="showSpecies('Taurulus_bubalis'); return false;">Taurulus bubalis</a></li>
+            <li><a href="#" id="link-Tinca_tinca" onclick="showSpecies('Tinca_tinca'); return false;">Tinca tinca</a></li>
+            <li><a href="#" id="link-Todaropsis_eblanae" onclick="showSpecies('Todaropsis_eblanae'); return false;">Todaropsis eblanae</a></li>
+            <li><a href="#" id="link-Trachinus_draco" onclick="showSpecies('Trachinus_draco'); return false;">Trachinus draco</a></li>
+            <li><a href="#" id="link-Trachurus_trachurus" onclick="showSpecies('Trachurus_trachurus'); return false;">Trachurus trachurus</a></li>
+            <li><a href="#" id="link-Trisopterus_esmarkii" onclick="showSpecies('Trisopterus_esmarkii'); return false;">Trisopterus esmarkii</a></li>
+            <li><a href="#" id="link-Trisopterus_luscus" onclick="showSpecies('Trisopterus_luscus'); return false;">Trisopterus luscus</a></li>
+            <li><a href="#" id="link-Trisopterus_minutus" onclick="showSpecies('Trisopterus_minutus'); return false;">Trisopterus minutus</a></li>
+            <li><a href="#" id="link-Vimba_vimba" onclick="showSpecies('Vimba_vimba'); return false;">Vimba vimba</a></li>
+            <li><a href="#" id="link-Zeus_faber" onclick="showSpecies('Zeus_faber'); return false;">Zeus faber</a></li>
+            <li><a href="#" id="link-Zoarces_viviparus" onclick="showSpecies('Zoarces_viviparus'); return false;">Zoarces viviparus</a></li>
+
+        </ul>
+    </nav>
+
+    <main id="main-content">
+        <div id="report-placeholder" class="placeholder">
+            Choose a species in the list to the left to show the report.
+        </div>
+
+    <div id="Abramis_brama" class="species-content">
+        <h2>Abramis brama</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Abramis_brama-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Abramis_brama-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Abramis_brama.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Agonus_cataphractus" class="species-content">
+        <h2>Agonus cataphractus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Agonus_cataphractus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Agonus_cataphractus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Agonus_cataphractus-Trawl')">Trawl</button>
+        </div>
+        <div id="Agonus_cataphractus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Agonus_cataphractus/Agonus_cataphractus_merge_bin_clean.png"  width="500" height="600" alt="Agonus_cataphractus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Agonus_cataphractus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Agonus_cataphractus.html"></iframe>
+        </div>
+        <div id="Agonus_cataphractus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Agonus_cataphractus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Alburnus_alburnus" class="species-content">
+        <h2>Alburnus alburnus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Alburnus_alburnus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Alburnus_alburnus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Alburnus_alburnus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Alloteuthis_subulata" class="species-content">
+        <h2>Alloteuthis subulata</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Alloteuthis_subulata-Trawl')">Trawl</button>
+        </div>
+        <div id="Alloteuthis_subulata-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Alloteuthis_subulata.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Alosa_fallax" class="species-content">
+        <h2>Alosa fallax</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Alosa_fallax-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Alosa_fallax-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Alosa_fallax-Trawl')">Trawl</button>
+        </div>
+        <div id="Alosa_fallax-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Alosa_fallax/Alosa_fallax_merge_bin_clean.png"  width="500" height="600" alt="Alosa_fallax_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Alosa_fallax-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Alosa_fallax.html"></iframe>
+        </div>
+        <div id="Alosa_fallax-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Alosa_fallax.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Amblyraja_radiata" class="species-content">
+        <h2>Amblyraja radiata</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Amblyraja_radiata-Trawl')">Trawl</button>
+        </div>
+        <div id="Amblyraja_radiata-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Amblyraja_radiata.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Ammodytes_marinus" class="species-content">
+        <h2>Ammodytes marinus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Ammodytes_marinus-Trawl')">Trawl</button>
+        </div>
+        <div id="Ammodytes_marinus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Ammodytes_marinus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Ammodytes_tobianus" class="species-content">
+        <h2>Ammodytes tobianus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Ammodytes_tobianus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Ammodytes_tobianus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Ammodytes_tobianus-Trawl')">Trawl</button>
+        </div>
+        <div id="Ammodytes_tobianus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Ammodytes_tobianus/Ammodytes_tobianus_merge_bin_clean.png"  width="500" height="600" alt="Ammodytes_tobianus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Ammodytes_tobianus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Ammodytes_tobianus.html"></iframe>
+        </div>
+        <div id="Ammodytes_tobianus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Ammodytes_tobianus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Anarhichas_lupus" class="species-content">
+        <h2>Anarhichas lupus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Anarhichas_lupus-Trawl')">Trawl</button>
+        </div>
+        <div id="Anarhichas_lupus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Anarhichas_lupus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Anguilla_anguilla" class="species-content">
+        <h2>Anguilla anguilla</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Anguilla_anguilla-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Anguilla_anguilla-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Anguilla_anguilla-Trawl')">Trawl</button>
+        </div>
+        <div id="Anguilla_anguilla-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Anguilla_anguilla/Anguilla_anguilla_merge_bin_clean.png"  width="500" height="600" alt="Anguilla_anguilla_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Anguilla_anguilla-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Anguilla_anguilla.html"></iframe>
+        </div>
+        <div id="Anguilla_anguilla-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Anguilla_anguilla.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Aphia_minuta" class="species-content">
+        <h2>Aphia minuta</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Aphia_minuta-Trawl')">Trawl</button>
+        </div>
+        <div id="Aphia_minuta-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Aphia_minuta.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Argentina_silus" class="species-content">
+        <h2>Argentina silus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Argentina_silus-Trawl')">Trawl</button>
+        </div>
+        <div id="Argentina_silus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Argentina_silus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Argentina_sphyraena" class="species-content">
+        <h2>Argentina sphyraena</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Argentina_sphyraena-Trawl')">Trawl</button>
+        </div>
+        <div id="Argentina_sphyraena-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Argentina_sphyraena.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Arnoglossus_laterna" class="species-content">
+        <h2>Arnoglossus laterna</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Arnoglossus_laterna-Trawl')">Trawl</button>
+        </div>
+        <div id="Arnoglossus_laterna-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Arnoglossus_laterna.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Belone_belone" class="species-content">
+        <h2>Belone belone</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Belone_belone-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Belone_belone-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Belone_belone.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Blicca_bjoerkna" class="species-content">
+        <h2>Blicca bjoerkna</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Blicca_bjoerkna-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Blicca_bjoerkna-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Blicca_bjoerkna.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Buglossidium_luteum" class="species-content">
+        <h2>Buglossidium luteum</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Buglossidium_luteum-Trawl')">Trawl</button>
+        </div>
+        <div id="Buglossidium_luteum-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Buglossidium_luteum.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Callionymus_lyra" class="species-content">
+        <h2>Callionymus lyra</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Callionymus_lyra-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Callionymus_lyra-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Callionymus_lyra-Trawl')">Trawl</button>
+        </div>
+        <div id="Callionymus_lyra-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Callionymus_lyra/Callionymus_lyra_merge_bin_clean.png"  width="500" height="600" alt="Callionymus_lyra_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Callionymus_lyra-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Callionymus_lyra.html"></iframe>
+        </div>
+        <div id="Callionymus_lyra-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Callionymus_lyra.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Callionymus_maculatus" class="species-content">
+        <h2>Callionymus maculatus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Callionymus_maculatus-Trawl')">Trawl</button>
+        </div>
+        <div id="Callionymus_maculatus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Callionymus_maculatus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Cancer_pagurus" class="species-content">
+        <h2>Cancer pagurus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Cancer_pagurus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Cancer_pagurus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Cancer_pagurus-Trawl')">Trawl</button>
+        </div>
+        <div id="Cancer_pagurus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Cancer_pagurus/Cancer_pagurus_merge_bin_clean.png"  width="500" height="600" alt="Cancer_pagurus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Cancer_pagurus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cancer_pagurus.html"></iframe>
+        </div>
+        <div id="Cancer_pagurus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Cancer_pagurus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Carassius_carassius" class="species-content">
+        <h2>Carassius carassius</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Carassius_carassius-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Carassius_carassius-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Carassius_carassius.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Carcinus_maenas" class="species-content">
+        <h2>Carcinus maenas</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Carcinus_maenas-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Carcinus_maenas-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Carcinus_maenas.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Centrolabrus_exoletus" class="species-content">
+        <h2>Centrolabrus exoletus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Centrolabrus_exoletus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Centrolabrus_exoletus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Centrolabrus_exoletus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Chelidonichthys_cuculus" class="species-content">
+        <h2>Chelidonichthys cuculus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Chelidonichthys_cuculus-Trawl')">Trawl</button>
+        </div>
+        <div id="Chelidonichthys_cuculus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Chelidonichthys_cuculus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Chelidonichthys_lucerna" class="species-content">
+        <h2>Chelidonichthys lucerna</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Chelidonichthys_lucerna-Trawl')">Trawl</button>
+        </div>
+        <div id="Chelidonichthys_lucerna-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Chelidonichthys_lucerna.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Ciliata_mustela" class="species-content">
+        <h2>Ciliata mustela</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Ciliata_mustela-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Ciliata_mustela-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Ciliata_mustela-Trawl')">Trawl</button>
+        </div>
+        <div id="Ciliata_mustela-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Ciliata_mustela/Ciliata_mustela_merge_bin_clean.png"  width="500" height="600" alt="Ciliata_mustela_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Ciliata_mustela-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Ciliata_mustela.html"></iframe>
+        </div>
+        <div id="Ciliata_mustela-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Ciliata_mustela.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Clupea_harengus" class="species-content">
+        <h2>Clupea harengus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Clupea_harengus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Clupea_harengus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Clupea_harengus-Trawl')">Trawl</button>
+        </div>
+        <div id="Clupea_harengus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Clupea_harengus/Clupea_harengus_merge_bin_clean.png"  width="500" height="600" alt="Clupea_harengus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Clupea_harengus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Clupea_harengus.html"></iframe>
+        </div>
+        <div id="Clupea_harengus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Clupea_harengus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Coregonus_albula" class="species-content">
+        <h2>Coregonus albula</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Coregonus_albula-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Coregonus_albula-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Coregonus_albula.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Coregonus_maraena" class="species-content">
+        <h2>Coregonus maraena</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Coregonus_maraena-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Coregonus_maraena-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Coregonus_maraena.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Cottus_gobio" class="species-content">
+        <h2>Cottus gobio</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Cottus_gobio-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Cottus_gobio-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cottus_gobio.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Cottus_poecilopus" class="species-content">
+        <h2>Cottus poecilopus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Cottus_poecilopus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Cottus_poecilopus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cottus_poecilopus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Crangon_crangon" class="species-content">
+        <h2>Crangon crangon</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Crangon_crangon-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Crangon_crangon-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Crangon_crangon.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Ctenolabrus_rupestris" class="species-content">
+        <h2>Ctenolabrus rupestris</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Ctenolabrus_rupestris-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Ctenolabrus_rupestris-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Ctenolabrus_rupestris.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Cyclopterus_lumpus" class="species-content">
+        <h2>Cyclopterus lumpus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Cyclopterus_lumpus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Cyclopterus_lumpus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Cyclopterus_lumpus-Trawl')">Trawl</button>
+        </div>
+        <div id="Cyclopterus_lumpus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Cyclopterus_lumpus/Cyclopterus_lumpus_merge_bin_clean.png"  width="500" height="600" alt="Cyclopterus_lumpus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Cyclopterus_lumpus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cyclopterus_lumpus.html"></iframe>
+        </div>
+        <div id="Cyclopterus_lumpus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Cyclopterus_lumpus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Echiichthys_vipera" class="species-content">
+        <h2>Echiichthys vipera</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Echiichthys_vipera-Trawl')">Trawl</button>
+        </div>
+        <div id="Echiichthys_vipera-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Echiichthys_vipera.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Enchelyopus_cimbrius" class="species-content">
+        <h2>Enchelyopus cimbrius</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Enchelyopus_cimbrius-Trawl')">Trawl</button>
+        </div>
+        <div id="Enchelyopus_cimbrius-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Enchelyopus_cimbrius.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Engraulis_encrasicolus" class="species-content">
+        <h2>Engraulis encrasicolus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Engraulis_encrasicolus-Trawl')">Trawl</button>
+        </div>
+        <div id="Engraulis_encrasicolus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Engraulis_encrasicolus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Entelurus_aequoreus" class="species-content">
+        <h2>Entelurus aequoreus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Entelurus_aequoreus-Trawl')">Trawl</button>
+        </div>
+        <div id="Entelurus_aequoreus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Entelurus_aequoreus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Esox_lucius" class="species-content">
+        <h2>Esox lucius</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Esox_lucius-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Esox_lucius-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Esox_lucius.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Eutrigla_gurnardus" class="species-content">
+        <h2>Eutrigla gurnardus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Eutrigla_gurnardus-Trawl')">Trawl</button>
+        </div>
+        <div id="Eutrigla_gurnardus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Eutrigla_gurnardus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Gadiculus_argenteus" class="species-content">
+        <h2>Gadiculus argenteus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Gadiculus_argenteus-Trawl')">Trawl</button>
+        </div>
+        <div id="Gadiculus_argenteus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gadiculus_argenteus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Gadus_morhua" class="species-content">
+        <h2>Gadus morhua</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Gadus_morhua-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Gadus_morhua-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Gadus_morhua-Trawl')">Trawl</button>
+        </div>
+        <div id="Gadus_morhua-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Gadus_morhua/Gadus_morhua_merge_bin_clean.png"  width="500" height="600" alt="Gadus_morhua_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Gadus_morhua-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gadus_morhua.html"></iframe>
+        </div>
+        <div id="Gadus_morhua-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gadus_morhua.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Gasterosteus_aculeatus" class="species-content">
+        <h2>Gasterosteus aculeatus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Gasterosteus_aculeatus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Gasterosteus_aculeatus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Gasterosteus_aculeatus-Trawl')">Trawl</button>
+        </div>
+        <div id="Gasterosteus_aculeatus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Gasterosteus_aculeatus/Gasterosteus_aculeatus_merge_bin_clean.png"  width="500" height="600" alt="Gasterosteus_aculeatus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Gasterosteus_aculeatus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gasterosteus_aculeatus.html"></iframe>
+        </div>
+        <div id="Gasterosteus_aculeatus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gasterosteus_aculeatus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Glyptocephalus_cynoglossus" class="species-content">
+        <h2>Glyptocephalus cynoglossus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Glyptocephalus_cynoglossus-Trawl')">Trawl</button>
+        </div>
+        <div id="Glyptocephalus_cynoglossus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Glyptocephalus_cynoglossus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Gobius_niger" class="species-content">
+        <h2>Gobius niger</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Gobius_niger-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Gobius_niger-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Gobius_niger-Trawl')">Trawl</button>
+        </div>
+        <div id="Gobius_niger-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Gobius_niger/Gobius_niger_merge_bin_clean.png"  width="500" height="600" alt="Gobius_niger_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Gobius_niger-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gobius_niger.html"></iframe>
+        </div>
+        <div id="Gobius_niger-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gobius_niger.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Gymnocephalus_cernua" class="species-content">
+        <h2>Gymnocephalus cernua</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Gymnocephalus_cernua-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Gymnocephalus_cernua-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gymnocephalus_cernua.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Hippoglossoides_platessoides" class="species-content">
+        <h2>Hippoglossoides platessoides</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Hippoglossoides_platessoides-Trawl')">Trawl</button>
+        </div>
+        <div id="Hippoglossoides_platessoides-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hippoglossoides_platessoides.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Hippoglossus_hippoglossus" class="species-content">
+        <h2>Hippoglossus hippoglossus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Hippoglossus_hippoglossus-Trawl')">Trawl</button>
+        </div>
+        <div id="Hippoglossus_hippoglossus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hippoglossus_hippoglossus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Homarus_gammarus" class="species-content">
+        <h2>Homarus gammarus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Homarus_gammarus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Homarus_gammarus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Homarus_gammarus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Hyas_araneus" class="species-content">
+        <h2>Hyas araneus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Hyas_araneus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Hyas_araneus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Hyas_araneus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Hyperoplus_immaculatus" class="species-content">
+        <h2>Hyperoplus immaculatus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Hyperoplus_immaculatus-Trawl')">Trawl</button>
+        </div>
+        <div id="Hyperoplus_immaculatus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hyperoplus_immaculatus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Hyperoplus_lanceolatus" class="species-content">
+        <h2>Hyperoplus lanceolatus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Hyperoplus_lanceolatus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Hyperoplus_lanceolatus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Hyperoplus_lanceolatus-Trawl')">Trawl</button>
+        </div>
+        <div id="Hyperoplus_lanceolatus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Hyperoplus_lanceolatus/Hyperoplus_lanceolatus_merge_bin_clean.png"  width="500" height="600" alt="Hyperoplus_lanceolatus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Hyperoplus_lanceolatus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Hyperoplus_lanceolatus.html"></iframe>
+        </div>
+        <div id="Hyperoplus_lanceolatus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hyperoplus_lanceolatus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Illex_coindetii" class="species-content">
+        <h2>Illex coindetii</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Illex_coindetii-Trawl')">Trawl</button>
+        </div>
+        <div id="Illex_coindetii-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Illex_coindetii.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Labrus_bergylta" class="species-content">
+        <h2>Labrus bergylta</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Labrus_bergylta-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Labrus_bergylta-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Labrus_bergylta.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Lepidorhombus_whiffiagonis" class="species-content">
+        <h2>Lepidorhombus whiffiagonis</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Lepidorhombus_whiffiagonis-Trawl')">Trawl</button>
+        </div>
+        <div id="Lepidorhombus_whiffiagonis-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lepidorhombus_whiffiagonis.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Leuciscus_idus" class="species-content">
+        <h2>Leuciscus idus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Leuciscus_idus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Leuciscus_idus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Leuciscus_idus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Leuciscus_leuciscus" class="species-content">
+        <h2>Leuciscus leuciscus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Leuciscus_leuciscus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Leuciscus_leuciscus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Leuciscus_leuciscus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Limanda_limanda" class="species-content">
+        <h2>Limanda limanda</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Limanda_limanda-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Limanda_limanda-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Limanda_limanda-Trawl')">Trawl</button>
+        </div>
+        <div id="Limanda_limanda-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Limanda_limanda/Limanda_limanda_merge_bin_clean.png"  width="500" height="600" alt="Limanda_limanda_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Limanda_limanda-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Limanda_limanda.html"></iframe>
+        </div>
+        <div id="Limanda_limanda-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Limanda_limanda.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Lithodes_maja" class="species-content">
+        <h2>Lithodes maja</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Lithodes_maja-Trawl')">Trawl</button>
+        </div>
+        <div id="Lithodes_maja-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lithodes_maja.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Loligo_forbesii" class="species-content">
+        <h2>Loligo forbesii</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Loligo_forbesii-Trawl')">Trawl</button>
+        </div>
+        <div id="Loligo_forbesii-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Loligo_forbesii.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Loligo_vulgaris" class="species-content">
+        <h2>Loligo vulgaris</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Loligo_vulgaris-Trawl')">Trawl</button>
+        </div>
+        <div id="Loligo_vulgaris-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Loligo_vulgaris.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Lophius_piscatorius" class="species-content">
+        <h2>Lophius piscatorius</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Lophius_piscatorius-Trawl')">Trawl</button>
+        </div>
+        <div id="Lophius_piscatorius-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lophius_piscatorius.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Lota_lota" class="species-content">
+        <h2>Lota lota</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Lota_lota-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Lota_lota-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Lota_lota.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Lumpenus_lampretaeformis" class="species-content">
+        <h2>Lumpenus lampretaeformis</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Lumpenus_lampretaeformis-Trawl')">Trawl</button>
+        </div>
+        <div id="Lumpenus_lampretaeformis-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lumpenus_lampretaeformis.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Lycodes_vahlii" class="species-content">
+        <h2>Lycodes vahlii</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Lycodes_vahlii-Trawl')">Trawl</button>
+        </div>
+        <div id="Lycodes_vahlii-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lycodes_vahlii.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Macropodia_rostrata" class="species-content">
+        <h2>Macropodia rostrata</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Macropodia_rostrata-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Macropodia_rostrata-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Macropodia_rostrata.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Maurolicus_muelleri" class="species-content">
+        <h2>Maurolicus muelleri</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Maurolicus_muelleri-Trawl')">Trawl</button>
+        </div>
+        <div id="Maurolicus_muelleri-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Maurolicus_muelleri.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Melanogrammus_aeglefinus" class="species-content">
+        <h2>Melanogrammus aeglefinus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Melanogrammus_aeglefinus-Trawl')">Trawl</button>
+        </div>
+        <div id="Melanogrammus_aeglefinus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Melanogrammus_aeglefinus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Merlangius_merlangus" class="species-content">
+        <h2>Merlangius merlangus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Merlangius_merlangus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Merlangius_merlangus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Merlangius_merlangus-Trawl')">Trawl</button>
+        </div>
+        <div id="Merlangius_merlangus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Merlangius_merlangus/Merlangius_merlangus_merge_bin_clean.png"  width="500" height="600" alt="Merlangius_merlangus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Merlangius_merlangus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Merlangius_merlangus.html"></iframe>
+        </div>
+        <div id="Merlangius_merlangus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Merlangius_merlangus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Merluccius_merluccius" class="species-content">
+        <h2>Merluccius merluccius</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Merluccius_merluccius-Trawl')">Trawl</button>
+        </div>
+        <div id="Merluccius_merluccius-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Merluccius_merluccius.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Micromesistius_poutassou" class="species-content">
+        <h2>Micromesistius poutassou</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Micromesistius_poutassou-Trawl')">Trawl</button>
+        </div>
+        <div id="Micromesistius_poutassou-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Micromesistius_poutassou.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Microstomus_kitt" class="species-content">
+        <h2>Microstomus kitt</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Microstomus_kitt-Trawl')">Trawl</button>
+        </div>
+        <div id="Microstomus_kitt-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Microstomus_kitt.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Molva_molva" class="species-content">
+        <h2>Molva molva</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Molva_molva-Trawl')">Trawl</button>
+        </div>
+        <div id="Molva_molva-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Molva_molva.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Mullus_surmuletus" class="species-content">
+        <h2>Mullus surmuletus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Mullus_surmuletus-Trawl')">Trawl</button>
+        </div>
+        <div id="Mullus_surmuletus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Mullus_surmuletus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Mustelus_asterias" class="species-content">
+        <h2>Mustelus asterias</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Mustelus_asterias-Trawl')">Trawl</button>
+        </div>
+        <div id="Mustelus_asterias-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Mustelus_asterias.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Myoxocephalus_quadricorni" class="species-content">
+        <h2>Myoxocephalus quadricorni</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Myoxocephalus_quadricorni-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Myoxocephalus_quadricorni-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Myoxocephalus_quadricorni.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Myoxocephalus_scorpius" class="species-content">
+        <h2>Myoxocephalus scorpius</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Myoxocephalus_scorpius-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Myoxocephalus_scorpius-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Myoxocephalus_scorpius-Trawl')">Trawl</button>
+        </div>
+        <div id="Myoxocephalus_scorpius-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Myoxocephalus_scorpius/Myoxocephalus_scorpius_merge_bin_clean.png"  width="500" height="600" alt="Myoxocephalus_scorpius_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Myoxocephalus_scorpius-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Myoxocephalus_scorpius.html"></iframe>
+        </div>
+        <div id="Myoxocephalus_scorpius-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Myoxocephalus_scorpius.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Myxine_glutinosa" class="species-content">
+        <h2>Myxine glutinosa</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Myxine_glutinosa-Trawl')">Trawl</button>
+        </div>
+        <div id="Myxine_glutinosa-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Myxine_glutinosa.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Neogobius_melanostomus" class="species-content">
+        <h2>Neogobius melanostomus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Neogobius_melanostomus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Neogobius_melanostomus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Neogobius_melanostomus-Trawl')">Trawl</button>
+        </div>
+        <div id="Neogobius_melanostomus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Neogobius_melanostomus/Neogobius_melanostomus_merge_bin_clean.png"  width="500" height="600" alt="Neogobius_melanostomus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Neogobius_melanostomus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Neogobius_melanostomus.html"></iframe>
+        </div>
+        <div id="Neogobius_melanostomus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Neogobius_melanostomus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Nephrops_norvegicus" class="species-content">
+        <h2>Nephrops norvegicus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Nephrops_norvegicus-Trawl')">Trawl</button>
+        </div>
+        <div id="Nephrops_norvegicus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Nephrops_norvegicus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Nerophis_ophidion" class="species-content">
+        <h2>Nerophis ophidion</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Nerophis_ophidion-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Nerophis_ophidion-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Nerophis_ophidion.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Osmerus_eperlanus" class="species-content">
+        <h2>Osmerus eperlanus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Osmerus_eperlanus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Osmerus_eperlanus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Osmerus_eperlanus-Trawl')">Trawl</button>
+        </div>
+        <div id="Osmerus_eperlanus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Osmerus_eperlanus/Osmerus_eperlanus_merge_bin_clean.png"  width="500" height="600" alt="Osmerus_eperlanus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Osmerus_eperlanus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Osmerus_eperlanus.html"></iframe>
+        </div>
+        <div id="Osmerus_eperlanus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Osmerus_eperlanus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Pagurus_bernhardus" class="species-content">
+        <h2>Pagurus bernhardus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Pagurus_bernhardus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Pagurus_bernhardus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pagurus_bernhardus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Perca_fluviatilis" class="species-content">
+        <h2>Perca fluviatilis</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Perca_fluviatilis-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Perca_fluviatilis-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Perca_fluviatilis.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Pholis_gunnellus" class="species-content">
+        <h2>Pholis gunnellus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Pholis_gunnellus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Pholis_gunnellus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Pholis_gunnellus-Trawl')">Trawl</button>
+        </div>
+        <div id="Pholis_gunnellus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Pholis_gunnellus/Pholis_gunnellus_merge_bin_clean.png"  width="500" height="600" alt="Pholis_gunnellus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Pholis_gunnellus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pholis_gunnellus.html"></iframe>
+        </div>
+        <div id="Pholis_gunnellus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pholis_gunnellus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Phoxinus_phoxinus" class="species-content">
+        <h2>Phoxinus phoxinus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Phoxinus_phoxinus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Phoxinus_phoxinus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Phoxinus_phoxinus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Platichthys_flesus" class="species-content">
+        <h2>Platichthys flesus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Platichthys_flesus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Platichthys_flesus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Platichthys_flesus-Trawl')">Trawl</button>
+        </div>
+        <div id="Platichthys_flesus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Platichthys_flesus/Platichthys_flesus_merge_bin_clean.png"  width="500" height="600" alt="Platichthys_flesus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Platichthys_flesus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Platichthys_flesus.html"></iframe>
+        </div>
+        <div id="Platichthys_flesus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Platichthys_flesus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Pleuronectes_platessa" class="species-content">
+        <h2>Pleuronectes platessa</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Pleuronectes_platessa-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Pleuronectes_platessa-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Pleuronectes_platessa-Trawl')">Trawl</button>
+        </div>
+        <div id="Pleuronectes_platessa-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Pleuronectes_platessa/Pleuronectes_platessa_merge_bin_clean.png"  width="500" height="600" alt="Pleuronectes_platessa_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Pleuronectes_platessa-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pleuronectes_platessa.html"></iframe>
+        </div>
+        <div id="Pleuronectes_platessa-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pleuronectes_platessa.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Pollachius_pollachius" class="species-content">
+        <h2>Pollachius pollachius</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Pollachius_pollachius-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Pollachius_pollachius-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Pollachius_pollachius-Trawl')">Trawl</button>
+        </div>
+        <div id="Pollachius_pollachius-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Pollachius_pollachius/Pollachius_pollachius_merge_bin_clean.png"  width="500" height="600" alt="Pollachius_pollachius_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Pollachius_pollachius-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pollachius_pollachius.html"></iframe>
+        </div>
+        <div id="Pollachius_pollachius-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pollachius_pollachius.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Pollachius_virens" class="species-content">
+        <h2>Pollachius virens</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Pollachius_virens-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Pollachius_virens-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Pollachius_virens-Trawl')">Trawl</button>
+        </div>
+        <div id="Pollachius_virens-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Pollachius_virens/Pollachius_virens_merge_bin_clean.png"  width="500" height="600" alt="Pollachius_virens_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Pollachius_virens-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pollachius_virens.html"></iframe>
+        </div>
+        <div id="Pollachius_virens-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pollachius_virens.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Pomatoschistus_flavescens" class="species-content">
+        <h2>Pomatoschistus flavescens</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Pomatoschistus_flavescens-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Pomatoschistus_flavescens-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pomatoschistus_flavescens.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Pomatoschistus_minutus" class="species-content">
+        <h2>Pomatoschistus minutus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Pomatoschistus_minutus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Pomatoschistus_minutus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pomatoschistus_minutus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Pungitius_pungitius" class="species-content">
+        <h2>Pungitius pungitius</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Pungitius_pungitius-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Pungitius_pungitius-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pungitius_pungitius.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Raja_clavata" class="species-content">
+        <h2>Raja clavata</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Raja_clavata-Trawl')">Trawl</button>
+        </div>
+        <div id="Raja_clavata-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Raja_clavata.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Raja_montagui" class="species-content">
+        <h2>Raja montagui</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Raja_montagui-Trawl')">Trawl</button>
+        </div>
+        <div id="Raja_montagui-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Raja_montagui.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Rutilus_rutilus" class="species-content">
+        <h2>Rutilus rutilus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Rutilus_rutilus-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Rutilus_rutilus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Rutilus_rutilus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Salmo_trutta" class="species-content">
+        <h2>Salmo trutta</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Salmo_trutta-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Salmo_trutta-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Salmo_trutta.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Sander_lucioperca" class="species-content">
+        <h2>Sander lucioperca</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Sander_lucioperca-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Sander_lucioperca-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Sander_lucioperca.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Sardina_pilchardus" class="species-content">
+        <h2>Sardina pilchardus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Sardina_pilchardus-Trawl')">Trawl</button>
+        </div>
+        <div id="Sardina_pilchardus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Sardina_pilchardus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Scardinius_erythrophthalm" class="species-content">
+        <h2>Scardinius erythrophthalm</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Scardinius_erythrophthalm-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Scardinius_erythrophthalm-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scardinius_erythrophthalm.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Scomber_scombrus" class="species-content">
+        <h2>Scomber scombrus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Scomber_scombrus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Scomber_scombrus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Scomber_scombrus-Trawl')">Trawl</button>
+        </div>
+        <div id="Scomber_scombrus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Scomber_scombrus/Scomber_scombrus_merge_bin_clean.png"  width="500" height="600" alt="Scomber_scombrus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Scomber_scombrus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scomber_scombrus.html"></iframe>
+        </div>
+        <div id="Scomber_scombrus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scomber_scombrus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Scophthalmus_maximus" class="species-content">
+        <h2>Scophthalmus maximus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Scophthalmus_maximus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Scophthalmus_maximus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Scophthalmus_maximus-Trawl')">Trawl</button>
+        </div>
+        <div id="Scophthalmus_maximus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Scophthalmus_maximus/Scophthalmus_maximus_merge_bin_clean.png"  width="500" height="600" alt="Scophthalmus_maximus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Scophthalmus_maximus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scophthalmus_maximus.html"></iframe>
+        </div>
+        <div id="Scophthalmus_maximus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scophthalmus_maximus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Scophthalmus_rhombus" class="species-content">
+        <h2>Scophthalmus rhombus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Scophthalmus_rhombus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Scophthalmus_rhombus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Scophthalmus_rhombus-Trawl')">Trawl</button>
+        </div>
+        <div id="Scophthalmus_rhombus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Scophthalmus_rhombus/Scophthalmus_rhombus_merge_bin_clean.png"  width="500" height="600" alt="Scophthalmus_rhombus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Scophthalmus_rhombus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scophthalmus_rhombus.html"></iframe>
+        </div>
+        <div id="Scophthalmus_rhombus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scophthalmus_rhombus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Scyliorhinus_canicula" class="species-content">
+        <h2>Scyliorhinus canicula</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Scyliorhinus_canicula-Trawl')">Trawl</button>
+        </div>
+        <div id="Scyliorhinus_canicula-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scyliorhinus_canicula.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Solea_solea" class="species-content">
+        <h2>Solea solea</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Solea_solea-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Solea_solea-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Solea_solea-Trawl')">Trawl</button>
+        </div>
+        <div id="Solea_solea-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Solea_solea/Solea_solea_merge_bin_clean.png"  width="500" height="600" alt="Solea_solea_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Solea_solea-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Solea_solea.html"></iframe>
+        </div>
+        <div id="Solea_solea-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Solea_solea.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Spinachia_spinachia" class="species-content">
+        <h2>Spinachia spinachia</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Spinachia_spinachia-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Spinachia_spinachia-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Spinachia_spinachia.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Sprattus_sprattus" class="species-content">
+        <h2>Sprattus sprattus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Sprattus_sprattus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Sprattus_sprattus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Sprattus_sprattus-Trawl')">Trawl</button>
+        </div>
+        <div id="Sprattus_sprattus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Sprattus_sprattus/Sprattus_sprattus_merge_bin_clean.png"  width="500" height="600" alt="Sprattus_sprattus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Sprattus_sprattus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Sprattus_sprattus.html"></iframe>
+        </div>
+        <div id="Sprattus_sprattus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Sprattus_sprattus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Squalus_acanthias" class="species-content">
+        <h2>Squalus acanthias</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Squalus_acanthias-Trawl')">Trawl</button>
+        </div>
+        <div id="Squalus_acanthias-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Squalus_acanthias.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Symphodus_melops" class="species-content">
+        <h2>Symphodus melops</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Symphodus_melops-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Symphodus_melops-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Symphodus_melops.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Syngnathus_acus" class="species-content">
+        <h2>Syngnathus acus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Syngnathus_acus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Syngnathus_acus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Syngnathus_acus-Trawl')">Trawl</button>
+        </div>
+        <div id="Syngnathus_acus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Syngnathus_acus/Syngnathus_acus_merge_bin_clean.png"  width="500" height="600" alt="Syngnathus_acus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Syngnathus_acus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Syngnathus_acus.html"></iframe>
+        </div>
+        <div id="Syngnathus_acus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Syngnathus_acus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Syngnathus_rostellatus" class="species-content">
+        <h2>Syngnathus rostellatus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Syngnathus_rostellatus-Trawl')">Trawl</button>
+        </div>
+        <div id="Syngnathus_rostellatus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Syngnathus_rostellatus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Syngnathus_typhle" class="species-content">
+        <h2>Syngnathus typhle</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Syngnathus_typhle-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Syngnathus_typhle-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Syngnathus_typhle.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Taurulus_bubalis" class="species-content">
+        <h2>Taurulus bubalis</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Taurulus_bubalis-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Taurulus_bubalis-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Taurulus_bubalis.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Tinca_tinca" class="species-content">
+        <h2>Tinca tinca</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Tinca_tinca-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Tinca_tinca-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Tinca_tinca.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Todaropsis_eblanae" class="species-content">
+        <h2>Todaropsis eblanae</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Todaropsis_eblanae-Trawl')">Trawl</button>
+        </div>
+        <div id="Todaropsis_eblanae-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Todaropsis_eblanae.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Trachinus_draco" class="species-content">
+        <h2>Trachinus draco</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Trachinus_draco-Trawl')">Trawl</button>
+        </div>
+        <div id="Trachinus_draco-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trachinus_draco.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Trachurus_trachurus" class="species-content">
+        <h2>Trachurus trachurus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Trachurus_trachurus-Trawl')">Trawl</button>
+        </div>
+        <div id="Trachurus_trachurus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trachurus_trachurus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Trisopterus_esmarkii" class="species-content">
+        <h2>Trisopterus esmarkii</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Trisopterus_esmarkii-Trawl')">Trawl</button>
+        </div>
+        <div id="Trisopterus_esmarkii-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trisopterus_esmarkii.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Trisopterus_luscus" class="species-content">
+        <h2>Trisopterus luscus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Trisopterus_luscus-Trawl')">Trawl</button>
+        </div>
+        <div id="Trisopterus_luscus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trisopterus_luscus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Trisopterus_minutus" class="species-content">
+        <h2>Trisopterus minutus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Trisopterus_minutus-Trawl')">Trawl</button>
+        </div>
+        <div id="Trisopterus_minutus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trisopterus_minutus.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Vimba_vimba" class="species-content">
+        <h2>Vimba vimba</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Vimba_vimba-Gillnet')">Gillnet</button>
+        </div>
+        <div id="Vimba_vimba-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Vimba_vimba.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Zeus_faber" class="species-content">
+        <h2>Zeus faber</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Zeus_faber-Trawl')">Trawl</button>
+        </div>
+        <div id="Zeus_faber-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Zeus_faber.html"></iframe>
+        </div>
+    </div>
+
+    <div id="Zoarces_viviparus" class="species-content">
+        <h2>Zoarces viviparus</h2>
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'Zoarces_viviparus-Combined')">Combined model</button>
+            <button class="tablinks" onclick="openTab(event, 'Zoarces_viviparus-Gillnet')">Gillnet</button>
+            <button class="tablinks" onclick="openTab(event, 'Zoarces_viviparus-Trawl')">Trawl</button>
+        </div>
+        <div id="Zoarces_viviparus-Combined" class="tabcontent">
+             <div class="image-container">                <div>><img src="reports/Merge/Zoarces_viviparus/Zoarces_viviparus_merge_bin_clean.png"  width="500" height="600" alt="Zoarces_viviparus_merge_bin_clean.png" class="clickable" onclick="openModal(this.src)"></div>
+</div>
+        </div>
+        <div id="Zoarces_viviparus-Gillnet" class="tabcontent">
+            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Zoarces_viviparus.html"></iframe>
+        </div>
+        <div id="Zoarces_viviparus-Trawl" class="tabcontent">
+            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Zoarces_viviparus.html"></iframe>
+        </div>
+    </div>
+
+    </main>
+
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close-button" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        function showSpecies(selectedSpeciesId) {
+            document.getElementById('report-placeholder').style.display = 'none';
+            var contents = document.getElementsByClassName('species-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].style.display = 'none';
+            }
+            var links = document.getElementById('species-list').getElementsByTagName('a');
+            for (var i = 0; i < links.length; i++) {
+                links[i].classList.remove('active');
+            }
+            if (selectedSpeciesId) {
+                var speciesDiv = document.getElementById(selectedSpeciesId);
+                speciesDiv.style.display = 'block';
+                document.getElementById('link-' + selectedSpeciesId).classList.add('active');
+                var firstTab = speciesDiv.querySelector('.tabs button');
+                if (firstTab) {
+                    firstTab.click();
+                }
+            }
+        }
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            var parentDiv = evt.currentTarget.closest('.species-content');
+            tabcontent = parentDiv.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = parentDiv.querySelector('.tabs').getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        /* ---- NY JAVASCRIPT FÖR BILDMODAL ---- */
+        var modal = document.getElementById('imageModal');
+        var modalImg = document.getElementById("modalImage");
+
+        // Funktion för att öppna modalen
+        function openModal(src) {
+            modal.style.display = "flex";
+            modalImg.src = src;
+        }
+
+        // Funktion för att stänga modalen
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // Stäng även med Escape-tangenten
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
