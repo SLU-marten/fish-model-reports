@@ -1,0 +1,159 @@
+﻿Species;Gear;Presences;True.absences;Predictors;Model.methods;Model.runs.per.method;Ensemble.algorithm;Cutoff;Sensitivity;Specificity;Evaluation.metric;Calibration
+Abramis.brama;Gillnet;3 498;42 296;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;427;95,912;88,978;TSS;0,849
+Agonus.cataphractus;Gillnet;496;45 298;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;535;96,371;82,558;TSS;0,789
+Agonus.cataphractus;Trawl;845;13 819;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;398;90,888;81,323;TSS;0,72
+Alburnus.alburnus;Gillnet;5 085;40 709;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;503;88,81;82,014;TSS;0,708
+Alloteuthis.subulata;Trawl;378;14 286;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;613;98,148;93,686;TSS;0,919
+Alosa.fallax;Gillnet;107;45 687;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;242;100;97,255;TSS;0,973
+Alosa.fallax;Trawl;593;14 071;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;509;77,572;86,007;TSS;0,638
+Amblyraja.radiata;Trawl;674;13 990;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;509;94,807;91,887;TSS;0,868
+Ammodytes.marinus;Trawl;127;14 537;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;539;87,402;94,277;TSS;0,817
+Ammodytes.tobianus;Gillnet;318;45 476;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;302;97,17;90,866;TSS;0,883
+Ammodytes.tobianus;Trawl;91;14 573;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;466;93,407;91,326;TSS;0,847
+Anarhichas.lupus;Trawl;51;14 613;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;578;90,196;93,978;TSS;0,843
+Anguilla.anguilla;Gillnet;7 599;38 195;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;476;96,328;72,104;TSS;0,685
+Anguilla.anguilla;Trawl;379;14 285;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;445;88,654;86,51;TSS;0,753
+Aphia.minuta;Trawl;185;14 479;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;314;96,757;80,565;TSS;0,775
+Argentina.silus;Trawl;70;14 594;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;334;97,143;94,888;TSS;0,92
+Argentina.sphyraena;Trawl;253;14 411;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;400;94,466;93,408;TSS;0,879
+Arnoglossus.laterna;Trawl;1 424;13 240;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;453;95,084;82,946;TSS;0,78
+Belone.belone;Gillnet;64;45 730;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;360;93,75;94,594;TSS;0,884
+Blicca.bjoerkna;Gillnet;5 940;39 854;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;525;96,414;87,974;TSS;0,844
+Buglossidium.luteum;Trawl;411;14 253;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;556;90,998;91,139;TSS;0,822
+Callionymus.lyra;Gillnet;51;45 743;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;307;94,118;92,666;TSS;0,868
+Callionymus.lyra;Trawl;1 497;13 167;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;533;94,055;84,545;TSS;0,786
+Callionymus.maculatus;Trawl;1 258;13 406;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;533;93,084;88,707;TSS;0,818
+Cancer.pagurus;Gillnet;464;45 330;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;400;93,103;91,549;TSS;0,847
+Cancer.pagurus;Trawl;337;14 327;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;590;96,142;91,687;TSS;0,88
+Carassius.carassius;Gillnet;126;45 668;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;461;93,651;94,359;TSS;0,88
+Carcinus.maenas;Gillnet;18 103;27 691;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;662;99,426;96,327;TSS;0,958
+Centrolabrus.exoletus;Gillnet;156;45 638;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;277;94,872;94,334;TSS;0,892
+Chelidonichthys.cuculus;Trawl;5;14 659;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;0;100;0;TSS;0,626
+Chelidonichthys.lucerna;Trawl;364;14 300;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;604;86,813;91,091;TSS;0,778
+Ciliata.mustela;Gillnet;893;44 901;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;516;95,409;80,847;TSS;0,763
+Ciliata.mustela;Trawl;15;14 649;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;380;100;81,132;TSS;0,812
+Clupea.harengus;Gillnet;16 684;29 110;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;642;90,164;86,802;TSS;0,769
+Clupea.harengus;Trawl;10 911;3 753;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;583;83,182;83,72;TSS;0,669
+Coregonus.albula;Gillnet;990;44 804;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;422;98,081;95,208;TSS;0,933
+Coregonus.maraena;Gillnet;4 413;41 381;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;425;91,638;78,737;TSS;0,704
+Cottus.gobio;Gillnet;129;45 665;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;370;98,45;81,934;TSS;0,806
+Cottus.poecilopus;Gillnet;82;45 712;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;556;98,78;91,783;TSS;0,906
+Crangon.crangon;Gillnet;186;45 608;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;620;93,548;85,991;TSS;0,795
+Ctenolabrus.rupestris;Gillnet;9 264;36 530;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;536;98,769;74,049;TSS;0,729
+Cyclopterus.lumpus;Gillnet;66;45 728;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;457;98,485;75,892;TSS;0,744
+Cyclopterus.lumpus;Trawl;1 501;13 163;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;418;82,478;76,122;TSS;0,586
+Echiichthys.vipera;Trawl;61;14 603;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;580;90,164;95,316;TSS;0,855
+Eledone.cirrhosa;Trawl;4;14 660;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;423;100;81,808;TSS;0,818
+Enchelyopus.cimbrius;Trawl;2 691;11 973;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;436;83,761;78,201;TSS;0,62
+Engraulis.encrasicolus;Trawl;1 527;13 137;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;460;82,449;72,794;TSS;0,552
+Entelurus.aequoreus;Trawl;128;14 536;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;573;89,062;96,092;TSS;0,852
+Esox.lucius;Gillnet;958;44 836;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;427;93,319;79,775;TSS;0,732
+Eutrigla.gurnardus;Trawl;3 147;11 517;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;477;93,391;89,763;TSS;0,832
+Gadiculus.argenteus;Trawl;94;14 570;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;218;100;95,765;TSS;0,958
+Gadus.morhua;Gillnet;13 014;32 780;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;440;97,994;73,807;TSS;0,718
+Gadus.morhua;Trawl;13 153;1 511;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;625;77,465;87,227;TSS;0,649
+Gasterosteus.aculeatus;Gillnet;3 281;42 513;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;429;92,045;84,762;TSS;0,769
+Gasterosteus.aculeatus;Trawl;989;13 675;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;474;81,092;83,378;TSS;0,643
+Glyptocephalus.cynoglossus;Trawl;1 041;13 623;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;581;92,315;93,599;TSS;0,859
+Gobius.niger;Gillnet;5 978;39 816;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;448;87,086;59,23;TSS;0,463
+Gobius.niger;Trawl;694;13 970;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;385;94,813;85,934;TSS;0,808
+Gymnocephalus.cernua;Gillnet;14 026;31 768;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;480;96,285;87,217;TSS;0,835
+Helicolenus.dactylopterus;Trawl;6;14 658;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;442;100;99,741;TSS;0,997
+Hippoglossoides.platessoides;Trawl;3 891;10 773;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;512;96,196;94,236;TSS;0,905
+Hippoglossus.hippoglossus;Trawl;46;14 618;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;394;95,652;87,57;TSS;0,833
+Homarus.gammarus;Gillnet;110;45 684;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;373;93,636;94,053;TSS;0,877
+Hyas.araneus;Gillnet;117;45 677;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;514;99,145;82,514;TSS;0,817
+Hyperoplus.immaculatus;Trawl;90;14 574;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;346;96,667;90,62;TSS;0,873
+Hyperoplus.lanceolatus;Gillnet;924;44 870;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;419;93,939;93,033;TSS;0,869
+Hyperoplus.lanceolatus;Trawl;669;13 995;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;402;90,583;83,373;TSS;0,74
+Illex.coindetii;Trawl;37;14 627;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;514;97,297;94,223;TSS;0,916
+Labrus.bergylta;Gillnet;377;45 417;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;580;92,042;78,587;TSS;0,706
+Lepidorhombus.whiffiagonis;Trawl;145;14 519;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;581;93,793;95,633;TSS;0,895
+Leuciscus.idus;Gillnet;1 190;44 604;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;458;92,353;80,878;TSS;0,732
+Leuciscus.leuciscus;Gillnet;570;45 224;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;467;98,421;95,845;TSS;0,944
+Leucoraja.naevus;Trawl;2;14 662;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;291;100;99,986;TSS;1
+Limanda.limanda;Gillnet;475;45 319;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;493;87,579;94,243;TSS;0,818
+Limanda.limanda;Trawl;6 920;7 744;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;331;95,882;91,787;TSS;0,877
+Lithodes.maja;Trawl;71;14 593;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;517;95,775;95,614;TSS;0,915
+Loligo.forbesii;Trawl;310;14 354;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;526;96,774;92,288;TSS;0,891
+Loligo.vulgaris;Trawl;36;14 628;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;396;97,222;90,32;TSS;0,877
+Lophius.piscatorius;Trawl;134;14 530;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;541;91,045;94,948;TSS;0,86
+Lota.lota;Gillnet;108;45 686;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;609;90,741;91,474;TSS;0,822
+Lumpenus.lampretaeformis;Trawl;1 743;12 921;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;452;92,025;86,317;TSS;0,784
+Lycodes.vahlii;Trawl;323;14 341;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;276;97,523;91,688;TSS;0,892
+Macropodia.rostrata;Gillnet;133;45 661;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;582;96,241;83,542;TSS;0,798
+Maurolicus.muelleri;Trawl;372;14 292;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;563;95,968;94,633;TSS;0,906
+Melanogrammus.aeglefinus;Trawl;2 566;12 098;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;529;89,049;90,552;TSS;0,796
+Merlangius.merlangus;Gillnet;3 295;42 499;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;518;92,14;79,87;TSS;0,72
+Merlangius.merlangus;Trawl;7 733;6 931;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;535;89,694;92,209;TSS;0,819
+Merluccius.merluccius;Trawl;2 218;12 446;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;424;97,43;89,089;TSS;0,865
+Micromesistius.poutassou;Trawl;125;14 539;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;462;100;97,414;TSS;0,974
+Microstomus.kitt;Trawl;2 042;12 622;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;403;95,739;87,538;TSS;0,834
+Molva.molva;Trawl;170;14 494;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;529;92,353;91,948;TSS;0,843
+Mullus.surmuletus;Trawl;518;14 146;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;560;86,486;87,396;TSS;0,74
+Mustelus.asterias;Trawl;17;14 647;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;402;100;95,808;TSS;0,958
+Myoxocephalus.quadricorni;Gillnet;1 416;44 378;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;408;94,915;92,582;TSS;0,876
+Myoxocephalus.quadricornis;Trawl;199;14 465;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;525;96,985;97,124;TSS;0,941
+Myoxocephalus.scorpius;Gillnet;11 777;34 017;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;387;97,325;70,682;TSS;0,68
+Myoxocephalus.scorpius;Trawl;4 526;10 138;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;523;80,601;85,51;TSS;0,662
+Myxine.glutinosa;Trawl;558;14 106;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;618;94,086;96,441;TSS;0,906
+Neogobius.melanostomus;Gillnet;2 169;43 625;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;397;95,666;87,266;TSS;0,83
+Neogobius.melanostomus;Trawl;273;14 391;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;451;91,209;90,779;TSS;0,817
+Nephrops.norvegicus;Trawl;422;14 242;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;621;94,787;92,382;TSS;0,872
+Nerophis.ophidion;Gillnet;337;45 457;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;508;84,866;77,511;TSS;0,625
+Osmerus.eperlanus;Gillnet;5 557;40 237;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;469;93,45;84,194;TSS;0,777
+Osmerus.eperlanus;Trawl;1 104;13 560;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;453;89,402;84,44;TSS;0,739
+Pagurus.bernhardus;Gillnet;483;45 311;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;488;95,859;80,212;TSS;0,761
+Perca.fluviatilis;Gillnet;20 616;25 178;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;542;95,416;93,185;TSS;0,886
+Pholis.gunnellus;Gillnet;225;45 569;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;444;96,889;72,082;TSS;0,69
+Pholis.gunnellus;Trawl;299;14 365;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;533;87,96;93,241;TSS;0,813
+Phoxinus.phoxinus;Gillnet;225;45 569;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;313;99,556;98,15;TSS;0,977
+Platichthys.flesus;Gillnet;10 820;34 974;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;425;79,982;70,189;TSS;0,502
+Platichthys.flesus;Trawl;11 955;2 709;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;555;84,074;82,392;TSS;0,664
+Pleuronectes.platessa;Gillnet;2 982;42 812;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;543;91,683;69,245;TSS;0,609
+Pleuronectes.platessa;Trawl;10 167;4 497;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;587;84,764;90,282;TSS;0,75
+Pollachius.pollachius;Gillnet;351;45 443;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;542;94,302;79,702;TSS;0,74
+Pollachius.pollachius;Trawl;107;14 557;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;244;99,065;84,056;TSS;0,832
+Pollachius.virens;Gillnet;3 489;42 305;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;421;96,446;70,959;TSS;0,673
+Pollachius.virens;Trawl;822;13 842;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;400;89,659;80,653;TSS;0,703
+Pomatoschistus.flavescens;Gillnet;80;45 714;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;453;97,5;91,298;TSS;0,888
+Pomatoschistus.minutus;Gillnet;62;45 732;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;419;98,387;93,169;TSS;0,916
+Pungitius.pungitius;Gillnet;323;45 471;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;571;95,666;97,299;TSS;0,93
+Raja.clavata;Trawl;87;14 577;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;489;98,851;92,975;TSS;0,919
+Raja.montagui;Trawl;14;14 650;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;609;92,857;93,788;TSS;0,867
+Rutilus.rutilus;Gillnet;15 882;29 912;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;527;96,26;88,911;TSS;0,852
+Salmo.trutta;Gillnet;471;45 323;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;500;82,803;74,395;TSS;0,572
+Sander.lucioperca;Gillnet;3 653;42 141;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;495;94,881;87,062;TSS;0,82
+Sardina.pilchardus;Trawl;84;14 580;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;575;90,476;96,235;TSS;0,868
+Scardinius.erythrophthalm;Gillnet;1 326;44 468;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;458;95,551;90,503;TSS;0,861
+Scomber.scombrus;Gillnet;240;45 554;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;338;96,667;96,246;TSS;0,929
+Scomber.scombrus;Trawl;1 273;13 391;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;472;85,232;80,681;TSS;0,66
+Scophthalmus.maximus;Gillnet;524;45 270;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;346;89,695;93,866;TSS;0,836
+Scophthalmus.maximus;Trawl;4 160;10 504;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;518;83,534;79,674;TSS;0,631
+Scophthalmus.rhombus;Gillnet;198;45 596;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;592;91,919;83,847;TSS;0,758
+Scophthalmus.rhombus;Trawl;2 005;12 659;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;495;91,721;83,482;TSS;0,752
+Scyliorhinus.canicula;Trawl;87;14 577;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;569;93,103;96,385;TSS;0,895
+Sebastes.viviparus;Trawl;6;14 658;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;526;100;95,006;TSS;0,95
+Solea.solea;Gillnet;1 016;44 778;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;478;97,736;75,408;TSS;0,732
+Solea.solea;Trawl;2 157;12 507;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;631;85,999;87,287;TSS;0,733
+Spinachia.spinachia;Gillnet;457;45 337;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;483;91,466;78,497;TSS;0,7
+Sprattus.sprattus;Gillnet;4 318;41 476;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;445;90,806;76,193;TSS;0,67
+Sprattus.sprattus;Trawl;9 334;5 330;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;562;75,552;83,265;TSS;0,588
+Squalus.acanthias;Trawl;447;14 217;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;526;96,421;90,181;TSS;0,866
+Symphodus.melops;Gillnet;9 138;36 656;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;508;97,614;77,414;TSS;0,75
+Syngnathus.acus;Gillnet;291;45 503;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;526;95,876;74,637;TSS;0,705
+Syngnathus.acus;Trawl;123;14 541;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;560;86,179;91,431;TSS;0,777
+Syngnathus.rostellatus;Trawl;72;14 592;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;466;88,889;92,681;TSS;0,817
+Syngnathus.typhle;Gillnet;215;45 579;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;528;89,302;70,473;TSS;0,598
+Taurulus.bubalis;Gillnet;2 099;43 695;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;519;87,184;74,258;TSS;0,615
+Tinca.tinca;Gillnet;327;45 467;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;511;92,661;92,214;TSS;0,85
+Todaropsis.eblanae;Trawl;59;14 605;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;575;93,22;96,316;TSS;0,896
+Trachinus.draco;Trawl;1 513;13 151;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;398;95,241;88,579;TSS;0,838
+Trachurus.trachurus;Trawl;2 906;11 758;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;617;78,837;84,292;TSS;0,63
+Trisopterus.esmarkii;Trawl;1 531;13 133;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;322;95,493;90,299;TSS;0,858
+Trisopterus.luscus;Trawl;24;14 640;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;673;95,833;94,023;TSS;0,899
+Trisopterus.minutus;Trawl;826;13 838;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;283;96,005;81,58;TSS;0,776
+Vimba.vimba;Gillnet;861;44 933;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;417;94,89;87,82;TSS;0,827
+Zeus.faber;Trawl;36;14 628;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;611;91,667;98,421;TSS;0,901
+Zoarces.viviparus;Gillnet;10 054;35 740;11;RF, XGBOOST, CTA, GAM, GLM;5;EMwmean;562;87,418;65,436;TSS;0,529
+Zoarces.viviparus;Trawl;1 298;13 366;11;RF, XGBOOST, CTA, GAM, GLM;3;EMwmean;399;93,683;83,383;TSS;0,771

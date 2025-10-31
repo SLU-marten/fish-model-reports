@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -8,7 +7,9 @@
     <style>
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0; background-color: #f8f9fa; display: flex; height: 100vh;
+            margin: 0; background-color: #f8f9fa; display: flex; 
+            flex-direction: column; /* ÄNDRAD: Top-to-bottom layout */
+            height: 100vh;
         }
         #sidebar {
             width: 300px; background-color: #ffffff; color: #495057; padding: 20px;
@@ -25,9 +26,11 @@
         }
         #species-list li a:hover { background-color: #495057; color: #ffffff; }
         #species-list li a.active { background-color: #007bff; color: white; font-weight: bold; }
+        
         #main-content {
             flex-grow: 1; padding: 25px; overflow-y: auto;
-            height: 100vh; box-sizing: border-box;
+            height: 100%; /* ÄNDRAD: Från 100vh till 100% */
+            box-sizing: border-box;
         }
         .species-content { 
             display: none; border: 1px solid #dee2e6; padding: 20px; 
@@ -44,14 +47,13 @@
         .image-container { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 15px; text-align: center; margin: 20px 0; }
         .image-container div { flex: 1; min-width: 300px; padding: 10px; border: 1px solid #eee; border-radius: 5px;}
         .image-container img { max-width: 100%; height: auto; }
-        /* NYTT: Gör bilden klickbar */
         .image-container img.clickable { cursor: pointer; transition: transform 0.2s; }
         .image-container img.clickable:hover { transform: scale(1.03); }
         iframe { width: 100%; height: 1200px; border: 1px solid #ccc; }
 
-        /* ---- NY CSS FÖR BILDMODAL ---- */
+        /* ---- CSS FÖR BILDMODAL ---- */
         .modal {
-            display: none; /* Dold som standard */
+            /* display: none; */ /* Styrs nu av JS, men vi sätter den dold i page-content */
             position: fixed;
             z-index: 1000;
             left: 0;
@@ -94,10 +96,113 @@
             text-align: center;
             border: 2px dashed #dee2e6;
             border-radius: 8px;
+            flex-grow: 1; /* NYTT för att fylla utrymmet i main-content */
         }
+
+        /* ----- ALL NY CSS BÖRJAR HÄR ----- */
+
+        /* --- Topp-meny (Navbar) --- */
+        .navbar {
+            display: flex;
+            background-color: #343a40;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0; /* Hindrar menyn från att krympa */
+        }
+
+        .nav-link {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .nav-link:hover {
+            background-color: #495057;
+        }
+
+        .nav-link.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* --- Innehålls-wrapper --- */
+        .content-wrapper {
+            flex-grow: 1; /* Fyller resten av höjden */
+            display: flex;
+            overflow-y: hidden; /* Hindrar dubbla scroll-bars */
+        }
+
+        .page-content {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        /* --- Sida 1: Model Reports (din original-layout) --- */
+        #model-reports-page {
+            display: flex; /* Återskapar din sidebar + main-layout */
+            overflow: hidden; /* Sidebar och main ska sköta sin egen scroll */
+        }
+        
+        /* Göm modalen när den inte är aktiv */
+        #imageModal {
+            display: none; 
+        }
+
+        /* --- Sida 2: Model Overview --- */
+        #model-overview-page {
+            padding: 25px;
+            box-sizing: border-box;
+        }
+        
+        #model-overview-page h1 {
+             font-size: 1.5em; margin-top: 0; color: #343a40;
+        }
+
+        /* --- "Vacker" tabell-stil --- */
+        .overview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            font-size: 0.9em;
+        }
+
+        .overview-table th,
+        .overview-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .overview-table th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: 600;
+            position: sticky;
+            top: 0; /* Gör headern "sticky" vid scroll */
+        }
+
+        .overview-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .overview-table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+
     </style>
 </head>
 <body>
+<div class="navbar">
+        <a href="#" class="nav-link active" onclick="showPage('model-reports-page', this)">Model Reports</a>
+        <a href="#" class="nav-link" onclick="showPage('model-overview-page', this)">Model Overview</a>
+    </div>
+
+    <div class="content-wrapper">
+
+        <div id="model-reports-page" class="page-content">
 
     <nav id="sidebar">
         <h1>Species</h1>
@@ -240,7 +345,7 @@
             <button class="tablinks" onclick="openTab(event, 'Abramis_brama-Gillnet')">Gillnet</button>
         </div>
         <div id="Abramis_brama-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Abramis_brama.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Abramis_brama.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -256,10 +361,10 @@
 </div>
         </div>
         <div id="Agonus_cataphractus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Agonus_cataphractus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Agonus_cataphractus.html" src="about:blank"></iframe>
         </div>
         <div id="Agonus_cataphractus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Agonus_cataphractus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Agonus_cataphractus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -269,7 +374,7 @@
             <button class="tablinks" onclick="openTab(event, 'Alburnus_alburnus-Gillnet')">Gillnet</button>
         </div>
         <div id="Alburnus_alburnus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Alburnus_alburnus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Alburnus_alburnus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -279,7 +384,7 @@
             <button class="tablinks" onclick="openTab(event, 'Alloteuthis_subulata-Trawl')">Trawl</button>
         </div>
         <div id="Alloteuthis_subulata-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Alloteuthis_subulata.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Alloteuthis_subulata.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -295,10 +400,10 @@
 </div>
         </div>
         <div id="Alosa_fallax-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Alosa_fallax.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Alosa_fallax.html" src="about:blank"></iframe>
         </div>
         <div id="Alosa_fallax-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Alosa_fallax.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Alosa_fallax.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -308,7 +413,7 @@
             <button class="tablinks" onclick="openTab(event, 'Amblyraja_radiata-Trawl')">Trawl</button>
         </div>
         <div id="Amblyraja_radiata-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Amblyraja_radiata.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Amblyraja_radiata.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -318,7 +423,7 @@
             <button class="tablinks" onclick="openTab(event, 'Ammodytes_marinus-Trawl')">Trawl</button>
         </div>
         <div id="Ammodytes_marinus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Ammodytes_marinus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Ammodytes_marinus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -334,10 +439,10 @@
 </div>
         </div>
         <div id="Ammodytes_tobianus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Ammodytes_tobianus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Ammodytes_tobianus.html" src="about:blank"></iframe>
         </div>
         <div id="Ammodytes_tobianus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Ammodytes_tobianus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Ammodytes_tobianus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -347,7 +452,7 @@
             <button class="tablinks" onclick="openTab(event, 'Anarhichas_lupus-Trawl')">Trawl</button>
         </div>
         <div id="Anarhichas_lupus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Anarhichas_lupus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Anarhichas_lupus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -363,10 +468,10 @@
 </div>
         </div>
         <div id="Anguilla_anguilla-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Anguilla_anguilla.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Anguilla_anguilla.html" src="about:blank"></iframe>
         </div>
         <div id="Anguilla_anguilla-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Anguilla_anguilla.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Anguilla_anguilla.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -376,7 +481,7 @@
             <button class="tablinks" onclick="openTab(event, 'Aphia_minuta-Trawl')">Trawl</button>
         </div>
         <div id="Aphia_minuta-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Aphia_minuta.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Aphia_minuta.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -386,7 +491,7 @@
             <button class="tablinks" onclick="openTab(event, 'Argentina_silus-Trawl')">Trawl</button>
         </div>
         <div id="Argentina_silus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Argentina_silus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Argentina_silus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -396,7 +501,7 @@
             <button class="tablinks" onclick="openTab(event, 'Argentina_sphyraena-Trawl')">Trawl</button>
         </div>
         <div id="Argentina_sphyraena-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Argentina_sphyraena.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Argentina_sphyraena.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -406,7 +511,7 @@
             <button class="tablinks" onclick="openTab(event, 'Arnoglossus_laterna-Trawl')">Trawl</button>
         </div>
         <div id="Arnoglossus_laterna-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Arnoglossus_laterna.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Arnoglossus_laterna.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -416,7 +521,7 @@
             <button class="tablinks" onclick="openTab(event, 'Belone_belone-Gillnet')">Gillnet</button>
         </div>
         <div id="Belone_belone-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Belone_belone.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Belone_belone.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -426,7 +531,7 @@
             <button class="tablinks" onclick="openTab(event, 'Blicca_bjoerkna-Gillnet')">Gillnet</button>
         </div>
         <div id="Blicca_bjoerkna-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Blicca_bjoerkna.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Blicca_bjoerkna.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -436,7 +541,7 @@
             <button class="tablinks" onclick="openTab(event, 'Buglossidium_luteum-Trawl')">Trawl</button>
         </div>
         <div id="Buglossidium_luteum-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Buglossidium_luteum.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Buglossidium_luteum.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -452,10 +557,10 @@
 </div>
         </div>
         <div id="Callionymus_lyra-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Callionymus_lyra.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Callionymus_lyra.html" src="about:blank"></iframe>
         </div>
         <div id="Callionymus_lyra-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Callionymus_lyra.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Callionymus_lyra.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -465,7 +570,7 @@
             <button class="tablinks" onclick="openTab(event, 'Callionymus_maculatus-Trawl')">Trawl</button>
         </div>
         <div id="Callionymus_maculatus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Callionymus_maculatus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Callionymus_maculatus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -481,10 +586,10 @@
 </div>
         </div>
         <div id="Cancer_pagurus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cancer_pagurus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cancer_pagurus.html" src="about:blank"></iframe>
         </div>
         <div id="Cancer_pagurus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Cancer_pagurus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Cancer_pagurus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -494,7 +599,7 @@
             <button class="tablinks" onclick="openTab(event, 'Carassius_carassius-Gillnet')">Gillnet</button>
         </div>
         <div id="Carassius_carassius-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Carassius_carassius.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Carassius_carassius.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -504,7 +609,7 @@
             <button class="tablinks" onclick="openTab(event, 'Carcinus_maenas-Gillnet')">Gillnet</button>
         </div>
         <div id="Carcinus_maenas-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Carcinus_maenas.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Carcinus_maenas.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -514,7 +619,7 @@
             <button class="tablinks" onclick="openTab(event, 'Centrolabrus_exoletus-Gillnet')">Gillnet</button>
         </div>
         <div id="Centrolabrus_exoletus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Centrolabrus_exoletus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Centrolabrus_exoletus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -524,7 +629,7 @@
             <button class="tablinks" onclick="openTab(event, 'Chelidonichthys_cuculus-Trawl')">Trawl</button>
         </div>
         <div id="Chelidonichthys_cuculus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Chelidonichthys_cuculus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Chelidonichthys_cuculus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -534,7 +639,7 @@
             <button class="tablinks" onclick="openTab(event, 'Chelidonichthys_lucerna-Trawl')">Trawl</button>
         </div>
         <div id="Chelidonichthys_lucerna-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Chelidonichthys_lucerna.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Chelidonichthys_lucerna.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -550,10 +655,10 @@
 </div>
         </div>
         <div id="Ciliata_mustela-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Ciliata_mustela.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Ciliata_mustela.html" src="about:blank"></iframe>
         </div>
         <div id="Ciliata_mustela-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Ciliata_mustela.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Ciliata_mustela.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -569,10 +674,10 @@
 </div>
         </div>
         <div id="Clupea_harengus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Clupea_harengus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Clupea_harengus.html" src="about:blank"></iframe>
         </div>
         <div id="Clupea_harengus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Clupea_harengus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Clupea_harengus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -582,7 +687,7 @@
             <button class="tablinks" onclick="openTab(event, 'Coregonus_albula-Gillnet')">Gillnet</button>
         </div>
         <div id="Coregonus_albula-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Coregonus_albula.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Coregonus_albula.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -592,7 +697,7 @@
             <button class="tablinks" onclick="openTab(event, 'Coregonus_maraena-Gillnet')">Gillnet</button>
         </div>
         <div id="Coregonus_maraena-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Coregonus_maraena.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Coregonus_maraena.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -602,7 +707,7 @@
             <button class="tablinks" onclick="openTab(event, 'Cottus_gobio-Gillnet')">Gillnet</button>
         </div>
         <div id="Cottus_gobio-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cottus_gobio.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cottus_gobio.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -612,7 +717,7 @@
             <button class="tablinks" onclick="openTab(event, 'Cottus_poecilopus-Gillnet')">Gillnet</button>
         </div>
         <div id="Cottus_poecilopus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cottus_poecilopus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cottus_poecilopus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -622,7 +727,7 @@
             <button class="tablinks" onclick="openTab(event, 'Crangon_crangon-Gillnet')">Gillnet</button>
         </div>
         <div id="Crangon_crangon-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Crangon_crangon.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Crangon_crangon.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -632,7 +737,7 @@
             <button class="tablinks" onclick="openTab(event, 'Ctenolabrus_rupestris-Gillnet')">Gillnet</button>
         </div>
         <div id="Ctenolabrus_rupestris-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Ctenolabrus_rupestris.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Ctenolabrus_rupestris.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -648,10 +753,10 @@
 </div>
         </div>
         <div id="Cyclopterus_lumpus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cyclopterus_lumpus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Cyclopterus_lumpus.html" src="about:blank"></iframe>
         </div>
         <div id="Cyclopterus_lumpus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Cyclopterus_lumpus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Cyclopterus_lumpus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -661,7 +766,7 @@
             <button class="tablinks" onclick="openTab(event, 'Echiichthys_vipera-Trawl')">Trawl</button>
         </div>
         <div id="Echiichthys_vipera-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Echiichthys_vipera.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Echiichthys_vipera.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -671,7 +776,7 @@
             <button class="tablinks" onclick="openTab(event, 'Enchelyopus_cimbrius-Trawl')">Trawl</button>
         </div>
         <div id="Enchelyopus_cimbrius-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Enchelyopus_cimbrius.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Enchelyopus_cimbrius.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -681,7 +786,7 @@
             <button class="tablinks" onclick="openTab(event, 'Engraulis_encrasicolus-Trawl')">Trawl</button>
         </div>
         <div id="Engraulis_encrasicolus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Engraulis_encrasicolus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Engraulis_encrasicolus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -691,7 +796,7 @@
             <button class="tablinks" onclick="openTab(event, 'Entelurus_aequoreus-Trawl')">Trawl</button>
         </div>
         <div id="Entelurus_aequoreus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Entelurus_aequoreus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Entelurus_aequoreus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -701,7 +806,7 @@
             <button class="tablinks" onclick="openTab(event, 'Esox_lucius-Gillnet')">Gillnet</button>
         </div>
         <div id="Esox_lucius-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Esox_lucius.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Esox_lucius.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -711,7 +816,7 @@
             <button class="tablinks" onclick="openTab(event, 'Eutrigla_gurnardus-Trawl')">Trawl</button>
         </div>
         <div id="Eutrigla_gurnardus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Eutrigla_gurnardus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Eutrigla_gurnardus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -721,7 +826,7 @@
             <button class="tablinks" onclick="openTab(event, 'Gadiculus_argenteus-Trawl')">Trawl</button>
         </div>
         <div id="Gadiculus_argenteus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gadiculus_argenteus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gadiculus_argenteus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -737,10 +842,10 @@
 </div>
         </div>
         <div id="Gadus_morhua-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gadus_morhua.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gadus_morhua.html" src="about:blank"></iframe>
         </div>
         <div id="Gadus_morhua-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gadus_morhua.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gadus_morhua.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -756,10 +861,10 @@
 </div>
         </div>
         <div id="Gasterosteus_aculeatus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gasterosteus_aculeatus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gasterosteus_aculeatus.html" src="about:blank"></iframe>
         </div>
         <div id="Gasterosteus_aculeatus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gasterosteus_aculeatus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gasterosteus_aculeatus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -769,7 +874,7 @@
             <button class="tablinks" onclick="openTab(event, 'Glyptocephalus_cynoglossus-Trawl')">Trawl</button>
         </div>
         <div id="Glyptocephalus_cynoglossus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Glyptocephalus_cynoglossus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Glyptocephalus_cynoglossus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -785,10 +890,10 @@
 </div>
         </div>
         <div id="Gobius_niger-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gobius_niger.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gobius_niger.html" src="about:blank"></iframe>
         </div>
         <div id="Gobius_niger-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gobius_niger.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Gobius_niger.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -798,7 +903,7 @@
             <button class="tablinks" onclick="openTab(event, 'Gymnocephalus_cernua-Gillnet')">Gillnet</button>
         </div>
         <div id="Gymnocephalus_cernua-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gymnocephalus_cernua.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Gymnocephalus_cernua.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -808,7 +913,7 @@
             <button class="tablinks" onclick="openTab(event, 'Hippoglossoides_platessoides-Trawl')">Trawl</button>
         </div>
         <div id="Hippoglossoides_platessoides-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hippoglossoides_platessoides.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hippoglossoides_platessoides.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -818,7 +923,7 @@
             <button class="tablinks" onclick="openTab(event, 'Hippoglossus_hippoglossus-Trawl')">Trawl</button>
         </div>
         <div id="Hippoglossus_hippoglossus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hippoglossus_hippoglossus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hippoglossus_hippoglossus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -828,7 +933,7 @@
             <button class="tablinks" onclick="openTab(event, 'Homarus_gammarus-Gillnet')">Gillnet</button>
         </div>
         <div id="Homarus_gammarus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Homarus_gammarus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Homarus_gammarus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -838,7 +943,7 @@
             <button class="tablinks" onclick="openTab(event, 'Hyas_araneus-Gillnet')">Gillnet</button>
         </div>
         <div id="Hyas_araneus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Hyas_araneus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Hyas_araneus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -848,7 +953,7 @@
             <button class="tablinks" onclick="openTab(event, 'Hyperoplus_immaculatus-Trawl')">Trawl</button>
         </div>
         <div id="Hyperoplus_immaculatus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hyperoplus_immaculatus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hyperoplus_immaculatus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -864,10 +969,10 @@
 </div>
         </div>
         <div id="Hyperoplus_lanceolatus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Hyperoplus_lanceolatus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Hyperoplus_lanceolatus.html" src="about:blank"></iframe>
         </div>
         <div id="Hyperoplus_lanceolatus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hyperoplus_lanceolatus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Hyperoplus_lanceolatus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -877,7 +982,7 @@
             <button class="tablinks" onclick="openTab(event, 'Illex_coindetii-Trawl')">Trawl</button>
         </div>
         <div id="Illex_coindetii-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Illex_coindetii.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Illex_coindetii.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -887,7 +992,7 @@
             <button class="tablinks" onclick="openTab(event, 'Labrus_bergylta-Gillnet')">Gillnet</button>
         </div>
         <div id="Labrus_bergylta-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Labrus_bergylta.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Labrus_bergylta.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -897,7 +1002,7 @@
             <button class="tablinks" onclick="openTab(event, 'Lepidorhombus_whiffiagonis-Trawl')">Trawl</button>
         </div>
         <div id="Lepidorhombus_whiffiagonis-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lepidorhombus_whiffiagonis.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lepidorhombus_whiffiagonis.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -907,7 +1012,7 @@
             <button class="tablinks" onclick="openTab(event, 'Leuciscus_idus-Gillnet')">Gillnet</button>
         </div>
         <div id="Leuciscus_idus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Leuciscus_idus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Leuciscus_idus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -917,7 +1022,7 @@
             <button class="tablinks" onclick="openTab(event, 'Leuciscus_leuciscus-Gillnet')">Gillnet</button>
         </div>
         <div id="Leuciscus_leuciscus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Leuciscus_leuciscus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Leuciscus_leuciscus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -933,10 +1038,10 @@
 </div>
         </div>
         <div id="Limanda_limanda-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Limanda_limanda.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Limanda_limanda.html" src="about:blank"></iframe>
         </div>
         <div id="Limanda_limanda-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Limanda_limanda.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Limanda_limanda.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -946,7 +1051,7 @@
             <button class="tablinks" onclick="openTab(event, 'Lithodes_maja-Trawl')">Trawl</button>
         </div>
         <div id="Lithodes_maja-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lithodes_maja.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lithodes_maja.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -956,7 +1061,7 @@
             <button class="tablinks" onclick="openTab(event, 'Loligo_forbesii-Trawl')">Trawl</button>
         </div>
         <div id="Loligo_forbesii-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Loligo_forbesii.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Loligo_forbesii.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -966,7 +1071,7 @@
             <button class="tablinks" onclick="openTab(event, 'Loligo_vulgaris-Trawl')">Trawl</button>
         </div>
         <div id="Loligo_vulgaris-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Loligo_vulgaris.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Loligo_vulgaris.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -976,7 +1081,7 @@
             <button class="tablinks" onclick="openTab(event, 'Lophius_piscatorius-Trawl')">Trawl</button>
         </div>
         <div id="Lophius_piscatorius-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lophius_piscatorius.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lophius_piscatorius.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -986,7 +1091,7 @@
             <button class="tablinks" onclick="openTab(event, 'Lota_lota-Gillnet')">Gillnet</button>
         </div>
         <div id="Lota_lota-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Lota_lota.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Lota_lota.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -996,7 +1101,7 @@
             <button class="tablinks" onclick="openTab(event, 'Lumpenus_lampretaeformis-Trawl')">Trawl</button>
         </div>
         <div id="Lumpenus_lampretaeformis-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lumpenus_lampretaeformis.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lumpenus_lampretaeformis.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1006,7 +1111,7 @@
             <button class="tablinks" onclick="openTab(event, 'Lycodes_vahlii-Trawl')">Trawl</button>
         </div>
         <div id="Lycodes_vahlii-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lycodes_vahlii.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Lycodes_vahlii.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1016,7 +1121,7 @@
             <button class="tablinks" onclick="openTab(event, 'Macropodia_rostrata-Gillnet')">Gillnet</button>
         </div>
         <div id="Macropodia_rostrata-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Macropodia_rostrata.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Macropodia_rostrata.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1026,7 +1131,7 @@
             <button class="tablinks" onclick="openTab(event, 'Maurolicus_muelleri-Trawl')">Trawl</button>
         </div>
         <div id="Maurolicus_muelleri-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Maurolicus_muelleri.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Maurolicus_muelleri.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1036,7 +1141,7 @@
             <button class="tablinks" onclick="openTab(event, 'Melanogrammus_aeglefinus-Trawl')">Trawl</button>
         </div>
         <div id="Melanogrammus_aeglefinus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Melanogrammus_aeglefinus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Melanogrammus_aeglefinus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1052,10 +1157,10 @@
 </div>
         </div>
         <div id="Merlangius_merlangus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Merlangius_merlangus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Merlangius_merlangus.html" src="about:blank"></iframe>
         </div>
         <div id="Merlangius_merlangus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Merlangius_merlangus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Merlangius_merlangus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1065,7 +1170,7 @@
             <button class="tablinks" onclick="openTab(event, 'Merluccius_merluccius-Trawl')">Trawl</button>
         </div>
         <div id="Merluccius_merluccius-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Merluccius_merluccius.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Merluccius_merluccius.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1075,7 +1180,7 @@
             <button class="tablinks" onclick="openTab(event, 'Micromesistius_poutassou-Trawl')">Trawl</button>
         </div>
         <div id="Micromesistius_poutassou-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Micromesistius_poutassou.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Micromesistius_poutassou.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1085,7 +1190,7 @@
             <button class="tablinks" onclick="openTab(event, 'Microstomus_kitt-Trawl')">Trawl</button>
         </div>
         <div id="Microstomus_kitt-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Microstomus_kitt.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Microstomus_kitt.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1095,7 +1200,7 @@
             <button class="tablinks" onclick="openTab(event, 'Molva_molva-Trawl')">Trawl</button>
         </div>
         <div id="Molva_molva-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Molva_molva.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Molva_molva.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1105,7 +1210,7 @@
             <button class="tablinks" onclick="openTab(event, 'Mullus_surmuletus-Trawl')">Trawl</button>
         </div>
         <div id="Mullus_surmuletus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Mullus_surmuletus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Mullus_surmuletus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1115,7 +1220,7 @@
             <button class="tablinks" onclick="openTab(event, 'Mustelus_asterias-Trawl')">Trawl</button>
         </div>
         <div id="Mustelus_asterias-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Mustelus_asterias.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Mustelus_asterias.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1125,7 +1230,7 @@
             <button class="tablinks" onclick="openTab(event, 'Myoxocephalus_quadricorni-Gillnet')">Gillnet</button>
         </div>
         <div id="Myoxocephalus_quadricorni-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Myoxocephalus_quadricorni.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Myoxocephalus_quadricorni.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1141,10 +1246,10 @@
 </div>
         </div>
         <div id="Myoxocephalus_scorpius-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Myoxocephalus_scorpius.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Myoxocephalus_scorpius.html" src="about:blank"></iframe>
         </div>
         <div id="Myoxocephalus_scorpius-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Myoxocephalus_scorpius.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Myoxocephalus_scorpius.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1154,7 +1259,7 @@
             <button class="tablinks" onclick="openTab(event, 'Myxine_glutinosa-Trawl')">Trawl</button>
         </div>
         <div id="Myxine_glutinosa-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Myxine_glutinosa.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Myxine_glutinosa.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1170,10 +1275,10 @@
 </div>
         </div>
         <div id="Neogobius_melanostomus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Neogobius_melanostomus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Neogobius_melanostomus.html" src="about:blank"></iframe>
         </div>
         <div id="Neogobius_melanostomus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Neogobius_melanostomus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Neogobius_melanostomus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1183,7 +1288,7 @@
             <button class="tablinks" onclick="openTab(event, 'Nephrops_norvegicus-Trawl')">Trawl</button>
         </div>
         <div id="Nephrops_norvegicus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Nephrops_norvegicus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Nephrops_norvegicus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1193,7 +1298,7 @@
             <button class="tablinks" onclick="openTab(event, 'Nerophis_ophidion-Gillnet')">Gillnet</button>
         </div>
         <div id="Nerophis_ophidion-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Nerophis_ophidion.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Nerophis_ophidion.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1209,10 +1314,10 @@
 </div>
         </div>
         <div id="Osmerus_eperlanus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Osmerus_eperlanus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Osmerus_eperlanus.html" src="about:blank"></iframe>
         </div>
         <div id="Osmerus_eperlanus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Osmerus_eperlanus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Osmerus_eperlanus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1222,7 +1327,7 @@
             <button class="tablinks" onclick="openTab(event, 'Pagurus_bernhardus-Gillnet')">Gillnet</button>
         </div>
         <div id="Pagurus_bernhardus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pagurus_bernhardus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pagurus_bernhardus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1232,7 +1337,7 @@
             <button class="tablinks" onclick="openTab(event, 'Perca_fluviatilis-Gillnet')">Gillnet</button>
         </div>
         <div id="Perca_fluviatilis-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Perca_fluviatilis.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Perca_fluviatilis.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1248,10 +1353,10 @@
 </div>
         </div>
         <div id="Pholis_gunnellus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pholis_gunnellus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pholis_gunnellus.html" src="about:blank"></iframe>
         </div>
         <div id="Pholis_gunnellus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pholis_gunnellus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pholis_gunnellus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1261,7 +1366,7 @@
             <button class="tablinks" onclick="openTab(event, 'Phoxinus_phoxinus-Gillnet')">Gillnet</button>
         </div>
         <div id="Phoxinus_phoxinus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Phoxinus_phoxinus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Phoxinus_phoxinus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1277,10 +1382,10 @@
 </div>
         </div>
         <div id="Platichthys_flesus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Platichthys_flesus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Platichthys_flesus.html" src="about:blank"></iframe>
         </div>
         <div id="Platichthys_flesus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Platichthys_flesus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Platichthys_flesus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1296,10 +1401,10 @@
 </div>
         </div>
         <div id="Pleuronectes_platessa-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pleuronectes_platessa.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pleuronectes_platessa.html" src="about:blank"></iframe>
         </div>
         <div id="Pleuronectes_platessa-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pleuronectes_platessa.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pleuronectes_platessa.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1315,10 +1420,10 @@
 </div>
         </div>
         <div id="Pollachius_pollachius-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pollachius_pollachius.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pollachius_pollachius.html" src="about:blank"></iframe>
         </div>
         <div id="Pollachius_pollachius-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pollachius_pollachius.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pollachius_pollachius.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1334,10 +1439,10 @@
 </div>
         </div>
         <div id="Pollachius_virens-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pollachius_virens.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pollachius_virens.html" src="about:blank"></iframe>
         </div>
         <div id="Pollachius_virens-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pollachius_virens.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Pollachius_virens.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1347,7 +1452,7 @@
             <button class="tablinks" onclick="openTab(event, 'Pomatoschistus_flavescens-Gillnet')">Gillnet</button>
         </div>
         <div id="Pomatoschistus_flavescens-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pomatoschistus_flavescens.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pomatoschistus_flavescens.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1357,7 +1462,7 @@
             <button class="tablinks" onclick="openTab(event, 'Pomatoschistus_minutus-Gillnet')">Gillnet</button>
         </div>
         <div id="Pomatoschistus_minutus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pomatoschistus_minutus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pomatoschistus_minutus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1367,7 +1472,7 @@
             <button class="tablinks" onclick="openTab(event, 'Pungitius_pungitius-Gillnet')">Gillnet</button>
         </div>
         <div id="Pungitius_pungitius-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pungitius_pungitius.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Pungitius_pungitius.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1377,7 +1482,7 @@
             <button class="tablinks" onclick="openTab(event, 'Raja_clavata-Trawl')">Trawl</button>
         </div>
         <div id="Raja_clavata-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Raja_clavata.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Raja_clavata.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1387,7 +1492,7 @@
             <button class="tablinks" onclick="openTab(event, 'Raja_montagui-Trawl')">Trawl</button>
         </div>
         <div id="Raja_montagui-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Raja_montagui.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Raja_montagui.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1397,7 +1502,7 @@
             <button class="tablinks" onclick="openTab(event, 'Rutilus_rutilus-Gillnet')">Gillnet</button>
         </div>
         <div id="Rutilus_rutilus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Rutilus_rutilus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Rutilus_rutilus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1407,7 +1512,7 @@
             <button class="tablinks" onclick="openTab(event, 'Salmo_trutta-Gillnet')">Gillnet</button>
         </div>
         <div id="Salmo_trutta-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Salmo_trutta.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Salmo_trutta.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1417,7 +1522,7 @@
             <button class="tablinks" onclick="openTab(event, 'Sander_lucioperca-Gillnet')">Gillnet</button>
         </div>
         <div id="Sander_lucioperca-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Sander_lucioperca.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Sander_lucioperca.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1427,7 +1532,7 @@
             <button class="tablinks" onclick="openTab(event, 'Sardina_pilchardus-Trawl')">Trawl</button>
         </div>
         <div id="Sardina_pilchardus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Sardina_pilchardus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Sardina_pilchardus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1437,7 +1542,7 @@
             <button class="tablinks" onclick="openTab(event, 'Scardinius_erythrophthalm-Gillnet')">Gillnet</button>
         </div>
         <div id="Scardinius_erythrophthalm-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scardinius_erythrophthalm.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scardinius_erythrophthalm.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1453,10 +1558,10 @@
 </div>
         </div>
         <div id="Scomber_scombrus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scomber_scombrus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scomber_scombrus.html" src="about:blank"></iframe>
         </div>
         <div id="Scomber_scombrus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scomber_scombrus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scomber_scombrus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1472,10 +1577,10 @@
 </div>
         </div>
         <div id="Scophthalmus_maximus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scophthalmus_maximus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scophthalmus_maximus.html" src="about:blank"></iframe>
         </div>
         <div id="Scophthalmus_maximus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scophthalmus_maximus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scophthalmus_maximus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1491,10 +1596,10 @@
 </div>
         </div>
         <div id="Scophthalmus_rhombus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scophthalmus_rhombus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Scophthalmus_rhombus.html" src="about:blank"></iframe>
         </div>
         <div id="Scophthalmus_rhombus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scophthalmus_rhombus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scophthalmus_rhombus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1504,7 +1609,7 @@
             <button class="tablinks" onclick="openTab(event, 'Scyliorhinus_canicula-Trawl')">Trawl</button>
         </div>
         <div id="Scyliorhinus_canicula-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scyliorhinus_canicula.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Scyliorhinus_canicula.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1520,10 +1625,10 @@
 </div>
         </div>
         <div id="Solea_solea-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Solea_solea.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Solea_solea.html" src="about:blank"></iframe>
         </div>
         <div id="Solea_solea-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Solea_solea.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Solea_solea.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1533,7 +1638,7 @@
             <button class="tablinks" onclick="openTab(event, 'Spinachia_spinachia-Gillnet')">Gillnet</button>
         </div>
         <div id="Spinachia_spinachia-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Spinachia_spinachia.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Spinachia_spinachia.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1549,10 +1654,10 @@
 </div>
         </div>
         <div id="Sprattus_sprattus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Sprattus_sprattus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Sprattus_sprattus.html" src="about:blank"></iframe>
         </div>
         <div id="Sprattus_sprattus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Sprattus_sprattus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Sprattus_sprattus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1562,7 +1667,7 @@
             <button class="tablinks" onclick="openTab(event, 'Squalus_acanthias-Trawl')">Trawl</button>
         </div>
         <div id="Squalus_acanthias-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Squalus_acanthias.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Squalus_acanthias.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1572,7 +1677,7 @@
             <button class="tablinks" onclick="openTab(event, 'Symphodus_melops-Gillnet')">Gillnet</button>
         </div>
         <div id="Symphodus_melops-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Symphodus_melops.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Symphodus_melops.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1588,10 +1693,10 @@
 </div>
         </div>
         <div id="Syngnathus_acus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Syngnathus_acus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Syngnathus_acus.html" src="about:blank"></iframe>
         </div>
         <div id="Syngnathus_acus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Syngnathus_acus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Syngnathus_acus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1601,7 +1706,7 @@
             <button class="tablinks" onclick="openTab(event, 'Syngnathus_rostellatus-Trawl')">Trawl</button>
         </div>
         <div id="Syngnathus_rostellatus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Syngnathus_rostellatus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Syngnathus_rostellatus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1611,7 +1716,7 @@
             <button class="tablinks" onclick="openTab(event, 'Syngnathus_typhle-Gillnet')">Gillnet</button>
         </div>
         <div id="Syngnathus_typhle-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Syngnathus_typhle.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Syngnathus_typhle.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1621,7 +1726,7 @@
             <button class="tablinks" onclick="openTab(event, 'Taurulus_bubalis-Gillnet')">Gillnet</button>
         </div>
         <div id="Taurulus_bubalis-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Taurulus_bubalis.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Taurulus_bubalis.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1631,7 +1736,7 @@
             <button class="tablinks" onclick="openTab(event, 'Tinca_tinca-Gillnet')">Gillnet</button>
         </div>
         <div id="Tinca_tinca-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Tinca_tinca.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Tinca_tinca.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1641,7 +1746,7 @@
             <button class="tablinks" onclick="openTab(event, 'Todaropsis_eblanae-Trawl')">Trawl</button>
         </div>
         <div id="Todaropsis_eblanae-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Todaropsis_eblanae.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Todaropsis_eblanae.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1651,7 +1756,7 @@
             <button class="tablinks" onclick="openTab(event, 'Trachinus_draco-Trawl')">Trawl</button>
         </div>
         <div id="Trachinus_draco-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trachinus_draco.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trachinus_draco.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1661,7 +1766,7 @@
             <button class="tablinks" onclick="openTab(event, 'Trachurus_trachurus-Trawl')">Trawl</button>
         </div>
         <div id="Trachurus_trachurus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trachurus_trachurus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trachurus_trachurus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1671,7 +1776,7 @@
             <button class="tablinks" onclick="openTab(event, 'Trisopterus_esmarkii-Trawl')">Trawl</button>
         </div>
         <div id="Trisopterus_esmarkii-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trisopterus_esmarkii.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trisopterus_esmarkii.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1681,7 +1786,7 @@
             <button class="tablinks" onclick="openTab(event, 'Trisopterus_luscus-Trawl')">Trawl</button>
         </div>
         <div id="Trisopterus_luscus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trisopterus_luscus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trisopterus_luscus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1691,7 +1796,7 @@
             <button class="tablinks" onclick="openTab(event, 'Trisopterus_minutus-Trawl')">Trawl</button>
         </div>
         <div id="Trisopterus_minutus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trisopterus_minutus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Trisopterus_minutus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1701,7 +1806,7 @@
             <button class="tablinks" onclick="openTab(event, 'Vimba_vimba-Gillnet')">Gillnet</button>
         </div>
         <div id="Vimba_vimba-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Vimba_vimba.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Vimba_vimba.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1711,7 +1816,7 @@
             <button class="tablinks" onclick="openTab(event, 'Zeus_faber-Trawl')">Trawl</button>
         </div>
         <div id="Zeus_faber-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Zeus_faber.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Zeus_faber.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1727,10 +1832,10 @@
 </div>
         </div>
         <div id="Zoarces_viviparus-Gillnet" class="tabcontent">
-            <iframe src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Zoarces_viviparus.html"></iframe>
+            <iframe data-src="reports/Fish/Gillnet/ProtectBaltic_ModelReport_Zoarces_viviparus.html" src="about:blank"></iframe>
         </div>
         <div id="Zoarces_viviparus-Trawl" class="tabcontent">
-            <iframe src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Zoarces_viviparus.html"></iframe>
+            <iframe data-src="reports/Fish/Trawl/ProtectBaltic_ModelReport_Zoarces_viviparus.html" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -1741,7 +1846,17 @@
         <img class="modal-content" id="modalImage">
     </div>
 
+    </div> 
+    <div id="model-overview-page" class="page-content" style="display: none;">
+            <h1>Model Overview</h1>
+            <div id="table-container">
+                <p>Loading overview table...</p>
+            </div>
+        </div> 
+        </div>
     <script>
+        /* ---- DIN BEFINTLIGA JAVASCRIPT ---- */
+
         function showSpecies(selectedSpeciesId) {
             document.getElementById('report-placeholder').style.display = 'none';
             var contents = document.getElementsByClassName('species-content');
@@ -1766,19 +1881,39 @@
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             var parentDiv = evt.currentTarget.closest('.species-content');
+            
+            // Dölj allt innehåll
             tabcontent = parentDiv.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].style.display = "none";
             }
+
+            // Avmarkera alla flik-länkar
             tablinks = parentDiv.querySelector('.tabs').getElementsByClassName("tablinks");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
-            document.getElementById(tabName).style.display = "block";
+
+            // Visa den klickade flikens innehåll
+            var activeTabContent = document.getElementById(tabName);
+            activeTabContent.style.display = "block";
             evt.currentTarget.className += " active";
+
+            // --- NY VIKTIG KOD HÄR ---
+            // Ladda iframen "on demand"
+            var iframe = activeTabContent.querySelector('iframe');
+            if (iframe) {
+                // Kolla om den har en data-src och om src är tom (about:blank)
+                var dataSrc = iframe.getAttribute('data-src');
+                if (dataSrc && iframe.src === 'about:blank') {
+                    console.log('Laddar iframe:', dataSrc);
+                    iframe.src = dataSrc; // Ladda iframen nu!
+                }
+            }
+            // --- SLUT PÅ NY KOD ---
         }
 
-        /* ---- NY JAVASCRIPT FÖR BILDMODAL ---- */
+        /* ---- JAVASCRIPT FÖR BILDMODAL ---- */
         var modal = document.getElementById('imageModal');
         var modalImg = document.getElementById("modalImage");
 
@@ -1799,6 +1934,126 @@
                 closeModal();
             }
         });
+
+        /* ----- ALL NY JAVASCRIPT BÖRJAR HÄR ----- */
+
+        // Flagga för att bara ladda CSV-filen en gång
+        let overviewLoaded = false;
+
+        /**
+         * Visar den valda huvudsidan och döljer de andra.
+         */
+        function showPage(pageId, clickedLink) {
+            // Dölj alla sidor
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+
+            // Visa målsidan
+            const targetPage = document.getElementById(pageId);
+            if (pageId === 'model-reports-page') {
+                targetPage.style.display = 'flex'; // Denna sida använder flex
+            } else {
+                targetPage.style.display = 'block'; // Denna är en vanlig block
+            }
+
+            // Uppdatera 'active'-klassen i toppmenyn
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            clickedLink.classList.add('active');
+
+            // Ladda tabellen om det är första gången vi klickar
+            if (pageId === 'model-overview-page' && !overviewLoaded) {
+                loadOverviewTable();
+                overviewLoaded = true;
+            }
+        }
+
+        /**
+         * Hämtar och visar CSV-datan.
+         */
+        async function loadOverviewTable() {
+            const container = document.getElementById('table-container');
+            
+            // !!! VIKTIGT: Ändra 'data/overview.csv' till din sökväg.
+            const csvFilePath = 'data/overview.csv'; 
+
+            try {
+                const response = await fetch(csvFilePath);
+                if (!response.ok) {
+                    throw new Error(`Kunde inte hämta fil: ${response.statusText}`);
+                }
+                const csvData = await response.text();
+                
+                const table = parseCSVToTable(csvData);
+                container.innerHTML = ''; // Rensa "Laddar..."
+                container.appendChild(table);
+
+            } catch (error) {
+                console.error('Fel vid laddning av CSV:', error);
+                container.innerHTML = `<p style="color: red;"><strong>Error:</strong> Kunde inte ladda översiktsdata från '${csvFilePath}'. Vänligen kontrollera sökvägen och konsolen.</p>`;
+            }
+        }
+
+        /**
+         * En mer robust CSV-parser.
+         * Hanterar avgränsare (;) inuti citattecken.
+         */
+        function parseCSVToTable(csv) {
+            const table = document.createElement('table');
+            table.className = 'overview-table';
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            // Dela upp i rader
+            const rows = csv.trim().split('\n');
+            
+            // Regex för att dela vid semikolon (;) istället för komma
+            const regex = /;(?=(?:[^"]*"[^"]*")*[^"]*$)/;
+
+            if (rows.length > 0) {
+                // Header-rad
+                const headerCells = rows[0].split(regex);
+                const headerRow = document.createElement('tr');
+                headerCells.forEach(cellText => {
+                    const th = document.createElement('th');
+                    th.textContent = cleanCell(cellText); // Rensa cellen
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+            }
+
+            // Datarader
+            for (let i = 1; i < rows.length; i++) {
+                if (rows[i].trim() === "") continue; // Hoppa över tomma rader
+                
+                const dataCells = rows[i].split(regex);
+                const dataRow = document.createElement('tr');
+                dataCells.forEach(cellText => {
+                    const td = document.createElement('td');
+                    td.textContent = cleanCell(cellText); // Rensa cellen
+                    dataRow.appendChild(td);
+                });
+                tbody.appendChild(dataRow);
+            }
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            return table;
+        }
+
+        /**
+         * Hjälpfunktion för att rensa cellvärden.
+         */
+        function cleanCell(cellText) {
+            let text = cellText.trim();
+            if (text.startsWith('"') && text.endsWith('"')) {
+                text = text.substring(1, text.length - 1);
+                text = text.replace(/""/g, '"');
+            }
+            return text;
+        }
     </script>
 </body>
 </html>
